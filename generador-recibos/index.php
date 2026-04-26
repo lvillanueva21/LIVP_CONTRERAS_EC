@@ -74,11 +74,15 @@ $subtituloSistema = 'Estudio Contable Contreras';
                 <p><?php echo htmlspecialchars($subtituloSistema, ENT_QUOTES, 'UTF-8'); ?></p>
             </div>
 
-            <div class="topbar__actions">
-                <button type="button" class="btn btn--light" id="btnDemoNotificacion">
-                    Probar notificación
-                </button>
-            </div>
+<div class="topbar__actions">
+    <button type="button" class="btn btn--light" id="btnColapsarSidebar">
+        Colapsar menú
+    </button>
+
+    <button type="button" class="btn btn--light" id="btnDemoNotificacion">
+        Probar notificación
+    </button>
+</div>
         </header>
 
         <section class="content">
@@ -154,5 +158,7 @@ $subtituloSistema = 'Estudio Contable Contreras';
 <script src="assets/js/app.js"></script>
 <script src="assets/js/datos_base.js"></script>
 <script src="assets/js/personalizacion_plantillas.js"></script>
+<script src="assets/js/sidebar_colapsable.js"></script>
+<script src="assets/js/generador_recibos.js"></script>
 </body>
 </html>
