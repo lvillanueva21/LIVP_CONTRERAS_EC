@@ -74,15 +74,22 @@ $subtituloSistema = 'Estudio Contable Contreras';
                 <p><?php echo htmlspecialchars($subtituloSistema, ENT_QUOTES, 'UTF-8'); ?></p>
             </div>
 
-<div class="topbar__actions">
-    <button type="button" class="btn btn--light" id="btnColapsarSidebar">
-        Colapsar menú
-    </button>
+            <div class="topbar__actions">
+                <button
+                    type="button"
+                    class="btn-icon btn-icon--topbar"
+                    id="btnColapsarSidebar"
+                    title="Contraer menú"
+                    aria-label="Contraer menú"
+                    aria-pressed="false"
+                >
+                    <span class="sidebar-collapse-icon" aria-hidden="true">‹</span>
+                </button>
 
-    <button type="button" class="btn btn--light" id="btnDemoNotificacion">
-        Probar notificación
-    </button>
-</div>
+                <button type="button" class="btn btn--light" id="btnDemoNotificacion">
+                    Probar notificación
+                </button>
+            </div>
         </header>
 
         <section class="content">

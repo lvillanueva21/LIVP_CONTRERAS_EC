@@ -631,7 +631,7 @@
 
         html += '<div class="recibo-preview ' + claseOrientacion + '">';
 
-        html += '<div class="recibo-preview__header">';
+        html += '<div class="recibo-preview__header' + (plantilla.mostrarLogo ? '' : ' recibo-preview__header--sin-logo') + '">';
 
         if (plantilla.mostrarLogo) {
             html += '<div class="recibo-preview__logo">';
