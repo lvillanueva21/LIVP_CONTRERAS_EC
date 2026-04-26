@@ -803,7 +803,7 @@
         var claseOrientacion = plantilla.orientacion === 'Vertical' ? 'recibo-preview--vertical' : 'recibo-preview--horizontal';
         var html = '';
 
-        html += '<div class="recibo-preview ' + claseOrientacion + '">';
+        html += '<div class="recibo-preview recibo-preview--documento ' + claseOrientacion + '">';
 
         html += '<div class="recibo-preview__header' + (plantilla.mostrarLogo ? '' : ' recibo-preview__header--sin-logo') + '" style="background: linear-gradient(135deg, ' + escaparHtml(config.colorPrincipal) + ', ' + escaparHtml(config.colorSecundario) + ');">';
 

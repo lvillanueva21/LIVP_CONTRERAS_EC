@@ -238,7 +238,7 @@ button {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 18px;
     margin-bottom: 22px;
 }
@@ -803,10 +803,6 @@ textarea.form-control {
 }
 
 @media (max-width: 1100px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .panel-grid,
     .form-layout {
         grid-template-columns: 1fr;
@@ -1849,5 +1845,686 @@ textarea.form-control {
 
     .topbar__actions {
         display: none;
+    }
+}
+
+/* =========================================================
+   Capa final de normalización visual del demo
+   ========================================================= */
+
+.topbar__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.topbar > div:not(.topbar__actions) {
+    min-width: 0;
+}
+
+.topbar h2,
+.topbar p {
+    overflow-wrap: anywhere;
+}
+
+.page-title > div:first-child {
+    min-width: 0;
+}
+
+.page-title h2,
+.page-title p,
+.panel__header h3,
+.panel__header p,
+.simple-card h3,
+.simple-card p,
+.empty-state h3,
+.empty-state p {
+    overflow-wrap: anywhere;
+}
+
+.panel,
+.simple-card,
+.receipt-preview-mini,
+.empty-state {
+    min-width: 0;
+}
+
+.panel__header {
+    min-width: 0;
+}
+
+.panel__header > div {
+    min-width: 0;
+}
+
+.page-actions {
+    flex-shrink: 0;
+}
+
+.btn {
+    min-height: 42px;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn--sm {
+    min-height: 34px;
+    line-height: 1.15;
+}
+
+.btn-icon {
+    flex: 0 0 auto;
+}
+
+.badge {
+    line-height: 1;
+    max-width: 100%;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 18px;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 999px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.app-table {
+    table-layout: auto;
+}
+
+.app-table th {
+    white-space: nowrap;
+}
+
+.app-table td {
+    vertical-align: middle;
+    line-height: 1.45;
+}
+
+.app-table td,
+.app-table th {
+    overflow-wrap: anywhere;
+}
+
+.app-table .form-control {
+    min-width: 120px;
+}
+
+.app-table .btn {
+    white-space: nowrap;
+}
+
+.estado-vacio {
+    text-align: center;
+    color: var(--color-muted);
+    padding: 28px 18px !important;
+    line-height: 1.55;
+    background: #f8fafc;
+}
+
+.estado-vacio strong {
+    display: block;
+    color: var(--color-dark);
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+.acciones-tabla,
+.plantilla-card__acciones,
+.recibo-acciones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.acciones-tabla .btn,
+.plantilla-card__acciones .btn,
+.recibo-acciones .btn {
+    flex: 0 0 auto;
+}
+
+.recibo-acciones {
+    min-width: 320px;
+}
+
+.form-control {
+    line-height: 1.25;
+}
+
+select.form-control {
+    cursor: pointer;
+}
+
+textarea.form-control {
+    line-height: 1.45;
+}
+
+.input-action-group {
+    min-width: 0;
+}
+
+.input-action-group .form-control {
+    min-width: 0;
+}
+
+.modal.activo {
+    display: flex;
+}
+
+.modal__dialog {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal__header,
+.modal__footer {
+    flex: 0 0 auto;
+}
+
+.modal__body {
+    overflow: auto;
+}
+
+.modal__dialog--wide,
+.modal__dialog--preview {
+    max-height: calc(100vh - 44px);
+}
+
+.modal__dialog--preview .modal__body {
+    max-height: calc(100vh - 190px);
+}
+
+.modal__body--preview {
+    overflow: auto;
+}
+
+.cards-grid--plantillas {
+    align-items: stretch;
+}
+
+.plantilla-card {
+    min-height: 100%;
+}
+
+.plantilla-card__meta,
+.plantilla-card__checks {
+    min-width: 0;
+}
+
+.plantilla-check {
+    min-width: 0;
+}
+
+.plantilla-check span {
+    flex: 0 0 auto;
+}
+
+.opciones-plantilla-card {
+    min-width: 0;
+}
+
+.generador-grid {
+    min-width: 0;
+}
+
+.resumen-totales {
+    min-width: 0;
+}
+
+.totales-lista div {
+    min-width: 0;
+}
+
+.totales-lista span {
+    overflow-wrap: anywhere;
+}
+
+.totales-lista strong {
+    text-align: right;
+}
+
+.conceptos-toolbar {
+    align-items: center;
+}
+
+.conceptos-toolbar .btn {
+    flex: 0 0 auto;
+}
+
+.concepto-bloque {
+    min-width: 0;
+}
+
+.concepto-bloque__header {
+    min-width: 0;
+}
+
+.concepto-bloque__header h4,
+.concepto-bloque__header span {
+    overflow-wrap: anywhere;
+}
+
+.app-table--conceptos {
+    min-width: 1480px;
+}
+
+.app-table--conceptos .form-control {
+    font-size: 13px;
+    border-radius: 12px;
+}
+
+.concepto-input {
+    min-width: 130px;
+}
+
+.concepto-input--descripcion {
+    min-width: 260px;
+}
+
+.concepto-monto {
+    min-width: 130px;
+}
+
+.concepto-descripcion-generada {
+    min-width: 240px;
+    max-width: 340px;
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.45;
+}
+
+.recibo-preview * {
+    box-sizing: border-box;
+}
+
+.recibo-preview__empresa,
+.recibo-preview__codigo,
+.recibo-preview__cliente,
+.recibo-preview__cuenta,
+.recibo-preview__bloque,
+.recibo-preview__total,
+.recibo-preview__footer {
+    min-width: 0;
+}
+
+.recibo-preview__empresa h3,
+.recibo-preview__empresa p,
+.recibo-preview__dato strong,
+.recibo-preview__fila span,
+.recibo-preview__footer {
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview__codigo strong {
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview__fila {
+    align-items: flex-start;
+}
+
+.recibo-preview__fila span {
+    min-width: 0;
+}
+
+.recibo-preview__fila strong {
+    flex: 0 0 auto;
+    text-align: right;
+}
+
+.recibo-preview__bloque-vacio {
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.stat-card {
+    min-width: 0;
+}
+
+.stat-card > div:last-child {
+    min-width: 0;
+}
+
+.stat-card h3 {
+    overflow-wrap: anywhere;
+}
+
+.stat-card h3#statTotalAcumulado {
+    font-size: 23px;
+}
+
+.stat-card h3#statUltimaAccion {
+    font-size: 15px;
+    line-height: 1.35;
+    max-width: 260px;
+}
+
+.exportando-recibo {
+    cursor: progress;
+}
+
+.exportando-recibo button,
+.exportando-recibo a,
+.exportando-recibo input,
+.exportando-recibo select,
+.exportando-recibo textarea {
+    pointer-events: none;
+}
+
+.exportacion-recibo-captura {
+    background: #ffffff;
+}
+
+.exportacion-recibo-captura .recibo-preview {
+    box-shadow: none;
+}
+
+@media (max-width: 1100px) {
+    .cards-grid--plantillas {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .conceptos-toolbar .btn {
+        flex: 1 1 260px;
+    }
+
+    .modal__dialog--preview .modal__body {
+        max-height: calc(100vh - 170px);
+    }
+}
+
+@media (max-width: 820px) {
+    .topbar {
+        align-items: center;
+    }
+
+    .topbar > div:not(.topbar__actions) {
+        flex: 1 1 auto;
+    }
+
+    .topbar h2 {
+        font-size: 18px;
+        line-height: 1.2;
+    }
+
+    .topbar p {
+        font-size: 12px;
+    }
+
+    .page-actions {
+        width: 100%;
+    }
+
+    .page-actions .btn {
+        width: 100%;
+        white-space: normal;
+    }
+
+    .panel__header {
+        flex-direction: column;
+    }
+
+    .panel__header .badge {
+        align-self: flex-start;
+    }
+
+    .acciones-tabla .btn,
+    .plantilla-card__acciones .btn,
+    .recibo-acciones .btn {
+        flex: 1 1 100%;
+    }
+
+    .recibo-acciones {
+        min-width: 0;
+    }
+
+    .modal {
+        padding: 14px;
+    }
+
+    .modal__dialog {
+        width: 100%;
+        max-height: calc(100vh - 28px);
+        border-radius: 22px;
+    }
+
+    .modal__header,
+    .modal__footer {
+        padding: 17px;
+    }
+
+    .modal__body {
+        padding: 17px;
+    }
+
+    .modal__dialog--preview .modal__body {
+        max-height: calc(100vh - 190px);
+    }
+
+    .conceptos-toolbar .btn {
+        flex: 1 1 100%;
+        white-space: normal;
+    }
+
+    .totales-lista div {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .totales-lista strong {
+        text-align: left;
+    }
+
+    .recibo-preview__fila {
+        flex-direction: column;
+    }
+
+    .recibo-preview__fila strong {
+        text-align: left;
+    }
+}
+
+/* =========================================================
+   Recibo estable para vista previa, impresión y exportación
+   ========================================================= */
+
+.recibo-preview--documento {
+    width: 100%;
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    overflow: hidden;
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.45;
+}
+
+.recibo-preview--documento * {
+    box-sizing: border-box;
+}
+
+.recibo-preview--horizontal.recibo-preview--documento {
+    max-width: 1120px;
+    min-height: auto;
+}
+
+.recibo-preview--vertical.recibo-preview--documento {
+    max-width: 760px;
+    min-height: auto;
+}
+
+.recibo-preview__header--sin-logo {
+    grid-template-columns: 1fr auto;
+}
+
+.recibo-preview__header--sin-logo .recibo-preview__empresa {
+    min-width: 0;
+}
+
+.recibo-preview--documento .recibo-preview__header {
+    min-width: 0;
+}
+
+.recibo-preview--documento .recibo-preview__empresa,
+.recibo-preview--documento .recibo-preview__codigo,
+.recibo-preview--documento .recibo-preview__cliente,
+.recibo-preview--documento .recibo-preview__cuenta,
+.recibo-preview--documento .recibo-preview__bloque,
+.recibo-preview--documento .recibo-preview__total,
+.recibo-preview--documento .recibo-preview__footer {
+    min-width: 0;
+}
+
+.recibo-preview--documento .recibo-preview__empresa h3 {
+    font-size: 24px;
+    line-height: 1.15;
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview--documento .recibo-preview__empresa p {
+    margin: 3px 0;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview--documento .recibo-preview__codigo strong {
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview--documento .recibo-preview__body {
+    padding: 22px;
+    display: grid;
+    gap: 18px;
+}
+
+.recibo-preview--documento .recibo-preview__grid {
+    min-width: 0;
+}
+
+.recibo-preview--documento .recibo-preview__dato {
+    min-width: 0;
+}
+
+.recibo-preview--documento .recibo-preview__dato span {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.recibo-preview--documento .recibo-preview__dato strong {
+    color: #0f172a;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview--documento .recibo-preview__bloques-grid {
+    min-width: 0;
+}
+
+.recibo-preview--documento .recibo-preview__bloque h4 {
+    margin: 0 0 12px;
+    color: var(--color-primary-dark);
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview--documento .recibo-preview__fila {
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.recibo-preview--documento .recibo-preview__fila span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview--documento .recibo-preview__fila strong {
+    flex: 0 0 auto;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.recibo-preview--documento .recibo-preview__bloque-vacio {
+    border: 1px dashed #cbd5e1;
+    background: #f8fafc;
+    color: #64748b;
+    border-radius: 14px;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.recibo-preview--documento .recibo-preview__total {
+    min-width: 0;
+}
+
+.recibo-preview--documento .recibo-preview__total span {
+    font-weight: 900;
+    overflow-wrap: anywhere;
+}
+
+.recibo-preview--documento .recibo-preview__total strong {
+    font-size: 26px;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.recibo-preview--documento .recibo-preview__footer {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 820px) {
+    .recibo-preview__header--sin-logo {
+        grid-template-columns: 1fr;
+    }
+
+    .recibo-preview--documento .recibo-preview__body {
+        padding: 16px;
+    }
+
+    .recibo-preview--documento .recibo-preview__fila {
+        flex-direction: column;
+    }
+
+    .recibo-preview--documento .recibo-preview__fila strong {
+        text-align: left;
+    }
+
+    .recibo-preview--documento .recibo-preview__total {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }

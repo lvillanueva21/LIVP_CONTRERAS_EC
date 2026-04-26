@@ -382,7 +382,6 @@
     }
 
     function obtenerHtmlImprimible(recibo) {
-        var css = obtenerCssLocal();
         var titulo = 'Recibo ' + recibo.codigo;
 
         return '<!DOCTYPE html>' +
@@ -391,23 +390,290 @@
                 '<meta charset="UTF-8">' +
                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
                 '<title>' + escaparHtml(titulo) + '</title>' +
-                '<style>' +
-                    css +
-                    'body{background:#f8fafc;margin:0;padding:24px;font-family:Arial,Helvetica,sans-serif;}' +
-                    '.barra-impresion{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 auto 18px;max-width:1120px;}' +
-                    '.barra-impresion h1{font-size:18px;margin:0;color:#0f172a;}' +
-                    '.barra-impresion button{border:0;border-radius:12px;background:#0f766e;color:#fff;padding:10px 14px;font-weight:800;cursor:pointer;}' +
-                    '@media print{body{background:#fff;padding:0}.barra-impresion{display:none}.recibo-preview{box-shadow:none;border-radius:0}}' +
-                '</style>' +
+                '<style>' + obtenerCssImprimibleRecibo() + '</style>' +
             '</head>' +
             '<body>' +
                 '<div class="barra-impresion">' +
                     '<h1>' + escaparHtml(titulo) + '</h1>' +
                     '<button type="button" onclick="window.print()">Imprimir</button>' +
                 '</div>' +
-                recibo.htmlVista +
+                '<main class="pagina-recibo">' +
+                    recibo.htmlVista +
+                '</main>' +
             '</body>' +
             '</html>';
+    }
+
+    function obtenerCssImprimibleRecibo() {
+        return '' +
+            ':root{' +
+                '--color-primary:#0f766e;' +
+                '--color-primary-dark:#115e59;' +
+                '--color-secondary:#14b8a6;' +
+                '--color-dark:#0f172a;' +
+                '--color-muted:#64748b;' +
+                '--color-border:#e2e8f0;' +
+                '--color-white:#ffffff;' +
+                '--shadow-soft:0 18px 45px rgba(15,23,42,0.08);' +
+            '}' +
+            '*{box-sizing:border-box;}' +
+            'body{' +
+                'margin:0;' +
+                'padding:24px;' +
+                'font-family:Arial,Helvetica,sans-serif;' +
+                'background:#f8fafc;' +
+                'color:#0f172a;' +
+            '}' +
+            '.pagina-recibo{' +
+                'width:100%;' +
+                'margin:0 auto;' +
+            '}' +
+            '.barra-impresion{' +
+                'display:flex;' +
+                'justify-content:space-between;' +
+                'align-items:center;' +
+                'gap:12px;' +
+                'margin:0 auto 18px;' +
+                'max-width:1120px;' +
+            '}' +
+            '.barra-impresion h1{' +
+                'font-size:18px;' +
+                'margin:0;' +
+                'color:#0f172a;' +
+                'line-height:1.25;' +
+            '}' +
+            '.barra-impresion button{' +
+                'border:0;' +
+                'border-radius:12px;' +
+                'background:#0f766e;' +
+                'color:#ffffff;' +
+                'padding:10px 14px;' +
+                'font-weight:800;' +
+                'cursor:pointer;' +
+            '}' +
+            '.recibo-preview{' +
+                'background:#ffffff;' +
+                'color:#0f172a;' +
+                'border-radius:22px;' +
+                'border:1px solid #e2e8f0;' +
+                'box-shadow:0 18px 45px rgba(15,23,42,0.08);' +
+                'margin:0 auto;' +
+                'overflow:hidden;' +
+                'font-family:Arial,Helvetica,sans-serif;' +
+                'line-height:1.45;' +
+            '}' +
+            '.recibo-preview--documento{' +
+                'width:100%;' +
+            '}' +
+            '.recibo-preview--horizontal{' +
+                'max-width:1120px;' +
+            '}' +
+            '.recibo-preview--vertical{' +
+                'max-width:760px;' +
+            '}' +
+            '.recibo-preview__header{' +
+                'display:grid;' +
+                'grid-template-columns:auto 1fr auto;' +
+                'gap:18px;' +
+                'align-items:center;' +
+                'padding:22px;' +
+                'color:#ffffff;' +
+                'background:linear-gradient(135deg,#0f766e,#14b8a6);' +
+            '}' +
+            '.recibo-preview__header--sin-logo{' +
+                'grid-template-columns:1fr auto;' +
+            '}' +
+            '.recibo-preview__logo{' +
+                'width:82px;' +
+                'height:82px;' +
+                'border-radius:22px;' +
+                'display:grid;' +
+                'place-items:center;' +
+                'overflow:hidden;' +
+                'background:rgba(255,255,255,0.20);' +
+                'border:1px solid rgba(255,255,255,0.30);' +
+                'font-weight:900;' +
+            '}' +
+            '.recibo-preview__logo img{' +
+                'width:100%;' +
+                'height:100%;' +
+                'object-fit:cover;' +
+            '}' +
+            '.recibo-preview__empresa{' +
+                'min-width:0;' +
+            '}' +
+            '.recibo-preview__empresa h3{' +
+                'margin:0 0 7px;' +
+                'font-size:24px;' +
+                'line-height:1.15;' +
+                'overflow-wrap:anywhere;' +
+            '}' +
+            '.recibo-preview__empresa p{' +
+                'margin:3px 0;' +
+                'color:rgba(255,255,255,0.86);' +
+                'line-height:1.35;' +
+                'overflow-wrap:anywhere;' +
+            '}' +
+            '.recibo-preview__codigo{' +
+                'text-align:right;' +
+                'min-width:0;' +
+            '}' +
+            '.recibo-preview__codigo span{' +
+                'display:block;' +
+                'font-size:12px;' +
+                'font-weight:900;' +
+                'text-transform:uppercase;' +
+                'opacity:0.86;' +
+            '}' +
+            '.recibo-preview__codigo strong{' +
+                'display:block;' +
+                'font-size:26px;' +
+                'margin-top:4px;' +
+                'overflow-wrap:anywhere;' +
+            '}' +
+            '.recibo-preview__meta-line{' +
+                'display:flex;' +
+                'flex-wrap:wrap;' +
+                'gap:8px;' +
+                'margin-top:10px;' +
+            '}' +
+            '.recibo-preview__meta-line span{' +
+                'background:rgba(255,255,255,0.18);' +
+                'border:1px solid rgba(255,255,255,0.26);' +
+                'border-radius:999px;' +
+                'padding:6px 10px;' +
+                'font-size:12px;' +
+                'font-weight:800;' +
+            '}' +
+            '.recibo-preview__body{' +
+                'padding:22px;' +
+                'display:grid;' +
+                'gap:18px;' +
+            '}' +
+            '.recibo-preview__cliente,' +
+            '.recibo-preview__cuenta,' +
+            '.recibo-preview__bloque,' +
+            '.recibo-preview__total{' +
+                'border:1px solid #e2e8f0;' +
+                'border-radius:18px;' +
+                'padding:16px;' +
+                'background:#ffffff;' +
+                'min-width:0;' +
+            '}' +
+            '.recibo-preview__cliente h4,' +
+            '.recibo-preview__cuenta h4,' +
+            '.recibo-preview__bloque h4{' +
+                'margin:0 0 12px;' +
+                'color:#115e59;' +
+                'font-size:15px;' +
+                'text-transform:uppercase;' +
+                'letter-spacing:0.4px;' +
+                'overflow-wrap:anywhere;' +
+            '}' +
+            '.recibo-preview__grid{' +
+                'display:grid;' +
+                'grid-template-columns:repeat(2,minmax(0,1fr));' +
+                'gap:10px;' +
+            '}' +
+            '.recibo-preview__dato{' +
+                'min-width:0;' +
+            '}' +
+            '.recibo-preview__dato span{' +
+                'display:block;' +
+                'color:#64748b;' +
+                'font-size:12px;' +
+                'font-weight:900;' +
+                'margin-bottom:4px;' +
+                'text-transform:uppercase;' +
+            '}' +
+            '.recibo-preview__dato strong{' +
+                'display:block;' +
+                'font-size:14px;' +
+                'overflow-wrap:anywhere;' +
+            '}' +
+            '.recibo-preview__bloques-grid{' +
+                'display:grid;' +
+                'grid-template-columns:repeat(2,minmax(0,1fr));' +
+                'gap:14px;' +
+            '}' +
+            '.recibo-preview--vertical .recibo-preview__bloques-grid{' +
+                'grid-template-columns:1fr;' +
+            '}' +
+            '.recibo-preview__fila{' +
+                'display:flex;' +
+                'justify-content:space-between;' +
+                'align-items:flex-start;' +
+                'gap:12px;' +
+                'padding:10px 0;' +
+                'border-bottom:1px dashed #e2e8f0;' +
+                'font-size:14px;' +
+            '}' +
+            '.recibo-preview__fila:last-child{' +
+                'border-bottom:0;' +
+            '}' +
+            '.recibo-preview__fila span{' +
+                'min-width:0;' +
+                'overflow-wrap:anywhere;' +
+            '}' +
+            '.recibo-preview__fila strong{' +
+                'white-space:nowrap;' +
+                'text-align:right;' +
+                'flex:0 0 auto;' +
+            '}' +
+            '.recibo-preview__bloque-vacio{' +
+                'border:1px dashed #cbd5e1;' +
+                'background:#f8fafc;' +
+                'color:#64748b;' +
+                'border-radius:14px;' +
+                'padding:12px;' +
+                'font-size:14px;' +
+                'line-height:1.5;' +
+                'margin:0;' +
+            '}' +
+            '.recibo-preview__total{' +
+                'display:flex;' +
+                'justify-content:space-between;' +
+                'align-items:center;' +
+                'background:#ecfeff;' +
+                'border-color:rgba(20,184,166,0.30);' +
+            '}' +
+            '.recibo-preview__total span{' +
+                'font-weight:900;' +
+                'color:#115e59;' +
+            '}' +
+            '.recibo-preview__total strong{' +
+                'font-size:26px;' +
+                'line-height:1.1;' +
+                'color:#115e59;' +
+                'white-space:nowrap;' +
+            '}' +
+            '.recibo-preview__footer{' +
+                'padding:16px 22px;' +
+                'color:#64748b;' +
+                'border-top:1px solid #e2e8f0;' +
+                'font-size:13px;' +
+                'line-height:1.5;' +
+                'background:#f8fafc;' +
+                'overflow-wrap:anywhere;' +
+            '}' +
+            '@media(max-width:820px){' +
+                'body{padding:14px;}' +
+                '.barra-impresion{align-items:flex-start;flex-direction:column;}' +
+                '.recibo-preview__header{grid-template-columns:1fr;text-align:left;}' +
+                '.recibo-preview__header--sin-logo{grid-template-columns:1fr;}' +
+                '.recibo-preview__codigo{text-align:left;}' +
+                '.recibo-preview__grid,' +
+                '.recibo-preview__bloques-grid{grid-template-columns:1fr;}' +
+                '.recibo-preview__fila{flex-direction:column;}' +
+                '.recibo-preview__fila strong{text-align:left;}' +
+                '.recibo-preview__total{align-items:flex-start;flex-direction:column;}' +
+            '}' +
+            '@media print{' +
+                'body{background:#ffffff;padding:0;}' +
+                '.barra-impresion{display:none;}' +
+                '.pagina-recibo{width:100%;}' +
+                '.recibo-preview{box-shadow:none;border-radius:0;border:0;}' +
+            '}';
     }
 
     function obtenerCssLocal() {
