@@ -153,5 +153,6 @@ $subtituloSistema = 'Estudio Contable Contreras';
 
 <script src="assets/js/app.js"></script>
 <script src="assets/js/datos_base.js"></script>
+<script src="assets/js/personalizacion_plantillas.js"></script>
 </body>
 </html>
