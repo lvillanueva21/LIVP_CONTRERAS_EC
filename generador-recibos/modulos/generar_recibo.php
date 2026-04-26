@@ -264,6 +264,40 @@
             </div>
         </div>
     </form>
+
+    <div class="panel recibos-generados-panel">
+        <div class="panel__header">
+            <div>
+                <h3>Recibos temporales generados</h3>
+                <p>Estos recibos viven solo en memoria durante la sesión demo. Al recargar la página se pierden.</p>
+            </div>
+            <span class="badge badge--info">Temporal</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="app-table app-table--recibos">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Plantilla</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaRecibosGenerados">
+                    <tr>
+                        <td colspan="7" class="estado-vacio">
+                            <strong>No hay recibos temporales generados</strong>
+                            Genera un recibo temporal para verlo en esta lista.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </section>
 
 <div class="modal" id="modalVistaPreviaRecibo">
@@ -290,6 +324,31 @@
 
             <button type="button" class="btn btn--primary" id="btnGenerarDesdeVistaPrevia">
                 Generar recibo temporal
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalVerReciboGenerado">
+    <div class="modal__dialog modal__dialog--preview">
+        <div class="modal__header">
+            <div>
+                <h3>Recibo generado</h3>
+                <p>Vista del recibo temporal guardado en memoria.</p>
+            </div>
+
+            <button type="button" class="modal__close" data-close-modal="modalVerReciboGenerado">
+                ×
+            </button>
+        </div>
+
+        <div class="modal__body modal__body--preview">
+            <div id="contenidoReciboGenerado"></div>
+        </div>
+
+        <div class="modal__footer">
+            <button type="button" class="btn btn--light" data-close-modal="modalVerReciboGenerado">
+                Cerrar
             </button>
         </div>
     </div>

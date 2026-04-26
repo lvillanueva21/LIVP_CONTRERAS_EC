@@ -1657,3 +1657,60 @@ textarea.form-control {
         align-items: flex-start;
     }
 }
+
+.recibos-generados-panel {
+    margin-top: 22px;
+}
+
+.app-table--recibos {
+    min-width: 1100px;
+}
+
+.recibo-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.recibo-acciones .btn {
+    white-space: nowrap;
+}
+
+.exportacion-recibo-captura {
+    position: fixed;
+    left: -12000px;
+    top: 0;
+    width: 1120px;
+    padding: 20px;
+    background: #ffffff;
+    z-index: -1;
+}
+
+.exportacion-recibo-captura .recibo-preview {
+    box-shadow: none;
+}
+
+.exportando-recibo {
+    pointer-events: none;
+    opacity: 0.72;
+}
+
+.stat-card h3#statTotalAcumulado {
+    font-size: 23px;
+}
+
+.stat-card h3#statUltimaAccion {
+    font-size: 15px;
+    line-height: 1.35;
+    max-width: 260px;
+}
+
+@media (max-width: 820px) {
+    .recibo-acciones .btn {
+        width: 100%;
+    }
+
+    .exportacion-recibo-captura {
+        width: 980px;
+    }
+}

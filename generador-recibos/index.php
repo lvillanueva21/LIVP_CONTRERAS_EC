@@ -155,10 +155,14 @@ $subtituloSistema = 'Estudio Contable Contreras';
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <script src="assets/js/app.js"></script>
 <script src="assets/js/datos_base.js"></script>
 <script src="assets/js/personalizacion_plantillas.js"></script>
 <script src="assets/js/sidebar_colapsable.js"></script>
 <script src="assets/js/generador_recibos.js"></script>
+<script src="assets/js/exportacion_recibos.js"></script>
 </body>
 </html>

@@ -34,7 +34,10 @@
                 </thead>
                 <tbody id="tablaAuditoria">
                     <tr>
-                        <td colspan="4">Todavía no hay acciones registradas.</td>
+                        <td colspan="4" class="estado-vacio">
+                            <strong>Todavía no hay acciones registradas</strong>
+                            Las acciones temporales aparecerán aquí durante la sesión demo.
+                        </td>
                     </tr>
                 </tbody>
             </table>

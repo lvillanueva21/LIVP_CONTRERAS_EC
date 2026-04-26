@@ -45,6 +45,22 @@
                 <h3 id="statRecibos">0</h3>
             </div>
         </article>
+
+        <article class="stat-card">
+            <div class="stat-card__icon">💰</div>
+            <div>
+                <p>Total acumulado en soles</p>
+                <h3 id="statTotalAcumulado">S/ 0.00</h3>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-card__icon">🕒</div>
+            <div>
+                <p>Última acción registrada</p>
+                <h3 id="statUltimaAccion">Sin acciones</h3>
+            </div>
+        </article>
     </div>
 
     <div class="panel-grid">
