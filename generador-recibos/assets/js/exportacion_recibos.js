@@ -269,7 +269,10 @@
                 registrarAuditoriaExportacion('JPG descargado', 'Se descargó el JPG del recibo temporal ' + recibo.codigo + '.');
                 mostrarAviso('success', 'JPG descargado', 'El recibo se descargó como imagen JPG.');
             })
-            .catch(function () {
+            .catch(function (error) {
+                if (window.console && typeof window.console.error === 'function') {
+                    window.console.error('[Exportacion JPG]', error);
+                }
                 mostrarAviso('error', 'Error al generar JPG', 'No se pudo generar la imagen del recibo.');
             })
             .then(function () {
@@ -329,7 +332,10 @@
                 registrarAuditoriaExportacion('PDF descargado', 'Se descargó el PDF del recibo temporal ' + recibo.codigo + '.');
                 mostrarAviso('success', 'PDF descargado', 'El recibo se descargó como PDF.');
             })
-            .catch(function () {
+            .catch(function (error) {
+                if (window.console && typeof window.console.error === 'function') {
+                    window.console.error('[Exportacion PDF]', error);
+                }
                 mostrarAviso('error', 'Error al generar PDF', 'No se pudo generar el PDF del recibo.');
             })
             .then(function () {
@@ -447,8 +453,10 @@
 
     function crearContenedorTemporalRecibo(recibo) {
         var contenedor = document.createElement('div');
+        var orientacion = obtenerOrientacionPdf(recibo);
 
         contenedor.className = 'exportacion-recibo-captura';
+        contenedor.setAttribute('data-orientacion', orientacion);
         contenedor.innerHTML = recibo.htmlVista;
 
         document.body.appendChild(contenedor);
@@ -554,7 +562,7 @@
                 '--color-white:#ffffff;' +
                 '--shadow-soft:0 18px 45px rgba(15,23,42,0.08);' +
             '}' +
-            '*{box-sizing:border-box;}' +
+            '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
             'body{' +
                 'margin:0;' +
                 'padding:24px;' +
@@ -619,7 +627,7 @@
                 'background:linear-gradient(135deg,#0f766e,#14b8a6);' +
             '}' +
             '.recibo-preview__header--sin-logo{' +
-                'grid-template-columns:1fr auto;' +
+                'grid-template-columns:minmax(0,1fr) auto;' +
             '}' +
             '.recibo-preview__logo{' +
                 'width:82px;' +

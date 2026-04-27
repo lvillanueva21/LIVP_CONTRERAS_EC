@@ -739,6 +739,13 @@
         pintarDashboardDatosBase();
         pintarVistaRapidaDatosBase();
         pintarAuditoriaDatosBase();
+        notificarActualizacionGenerador();
+    }
+
+    function notificarActualizacionGenerador() {
+        if (typeof window.actualizarSelectsGeneradorRecibo === 'function') {
+            window.actualizarSelectsGeneradorRecibo();
+        }
     }
 
     function pintarClientesBase() {

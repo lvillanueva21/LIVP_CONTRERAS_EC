@@ -20,6 +20,7 @@
         pintarPreviewPersonalizacion();
         pintarPlantillas();
         actualizarDashboardPlantillas();
+        notificarActualizacionGenerador();
     });
 
     function prepararConfiguracionEstudio() {
@@ -417,6 +418,7 @@
         pintarPlantillas();
         actualizarDashboardPlantillas();
         pintarAuditoriaGlobal();
+        notificarActualizacionGenerador();
     }
 
     function duplicarPlantilla(codigo) {
@@ -440,6 +442,7 @@
         pintarPlantillas();
         actualizarDashboardPlantillas();
         pintarAuditoriaGlobal();
+        notificarActualizacionGenerador();
     }
 
     function abrirVistaPreviaPlantilla(codigo) {
@@ -636,7 +639,7 @@
         if (plantilla.mostrarLogo) {
             html += '<div class="recibo-preview__logo">';
             if (config.logoDataUrl && config.logoDataUrl !== '') {
-                html += '<img src="' + config.logoDataUrl + '" alt="Logo">';
+                html += '<img src="' + escaparHtml(config.logoDataUrl) + '" alt="Logo">';
             } else {
                 html += 'ECC';
             }
@@ -1036,6 +1039,12 @@
         }
 
         return texto.replace(/^\s+|\s+$/g, '');
+    }
+
+    function notificarActualizacionGenerador() {
+        if (typeof window.actualizarSelectsGeneradorRecibo === 'function') {
+            window.actualizarSelectsGeneradorRecibo();
+        }
     }
 
     function escaparHtml(texto) {

@@ -933,7 +933,7 @@
         if (plantilla.mostrarLogo) {
             html += '<div class="recibo-preview__logo">';
             if (config.logoDataUrl && config.logoDataUrl !== '') {
-                html += '<img src="' + config.logoDataUrl + '" alt="Logo">';
+                html += '<img src="' + escaparHtml(config.logoDataUrl) + '" alt="Logo">';
             } else {
                 html += 'ECC';
             }
