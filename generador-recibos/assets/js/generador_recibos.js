@@ -53,6 +53,10 @@
             appData.auditoria = [];
         }
 
+        if (!appData.servicios) {
+            appData.servicios = [];
+        }
+
         if (!appData.configuracionEstudio) {
             appData.configuracionEstudio = {
                 logoDataUrl: '',
@@ -68,7 +72,100 @@
             };
         }
 
+        asegurarServiciosMinimosGenerador();
+
         window.appDemoData = appData;
+    }
+
+    function asegurarServiciosMinimosGenerador() {
+        asegurarServicioDemoGenerador(
+            'HONORARIOS',
+            'Servicios de contabilidad',
+            'HONORARIOS',
+            500.00
+        );
+
+        asegurarServicioDemoGenerador(
+            'PERIODO PENDIENTE',
+            'Periodos pendientes de pago',
+            'PERIODO PENDIENTE',
+            500.00
+        );
+
+        asegurarServicioDemoGenerador(
+            'ESSALUD',
+            'Aportaciones del empleador',
+            'ESSALUD',
+            276.00
+        );
+
+        asegurarServicioDemoGenerador(
+            'TRÁMITE SUNAT',
+            'Otros servicios o trámites',
+            'TRÁMITE SUNAT',
+            80.00
+        );
+    }
+
+    function asegurarServicioDemoGenerador(nombre, categoria, descripcionBase, montoSugerido) {
+        if (existeServicioActivoPorCategoriaGenerador(categoria)) {
+            return;
+        }
+
+        appData.servicios.push({
+            codigo: obtenerSiguienteCodigoServicioGenerador(),
+            nombre: nombre,
+            categoria: categoria,
+            descripcionBase: descripcionBase,
+            montoSugerido: montoSugerido,
+            estado: 'Activo'
+        });
+    }
+
+    function existeServicioActivoPorCategoriaGenerador(categoria) {
+        for (var i = 0; i < appData.servicios.length; i++) {
+            if (
+                appData.servicios[i].categoria === categoria &&
+                appData.servicios[i].estado === 'Activo' &&
+                parseFloat(appData.servicios[i].montoSugerido) > 0
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function obtenerSiguienteCodigoServicioGenerador() {
+        var mayor = 0;
+
+        for (var i = 0; i < appData.servicios.length; i++) {
+            if (parseInt(appData.servicios[i].codigo, 10) > mayor) {
+                mayor = parseInt(appData.servicios[i].codigo, 10);
+            }
+        }
+
+        return mayor + 1;
+    }
+
+    function obtenerMontoDemoPorCategoria(categoria) {
+        if (categoria === 'Servicios de contabilidad') {
+            return 500.00;
+        }
+
+        if (categoria === 'Periodos pendientes de pago') {
+            return 500.00;
+        }
+
+        if (categoria === 'Aportaciones del empleador') {
+            return 276.00;
+        }
+
+        if (categoria === 'Otros servicios o trámites') {
+            return 80.00;
+        }
+
+        return 1.00;
     }
 
     function iniciarGeneradorRecibos() {
@@ -295,6 +392,11 @@
         var anio = fecha.getFullYear();
         var descripcionBase = servicio ? servicio.descripcionBase : 'CONCEPTO';
         var descripcionGenerada = descripcionBase + ' ' + mes;
+        var monto = servicio ? parseFloat(servicio.montoSugerido) : obtenerMontoDemoPorCategoria(categoria);
+
+        if (isNaN(monto) || monto <= 0) {
+            monto = obtenerMontoDemoPorCategoria(categoria);
+        }
 
         estadoGenerador.contadorConceptos++;
 
@@ -310,7 +412,7 @@
             descripcionBase: descripcionBase,
             descripcionGenerada: descripcionGenerada,
             descripcionEditable: descripcionGenerada,
-            monto: servicio ? parseFloat(servicio.montoSugerido) : 0
+            monto: monto
         });
 
         pintarConceptosRecibo();
@@ -356,10 +458,18 @@
 
         if (propiedad === 'categoria') {
             concepto.categoria = campo.value;
+
             var primerServicio = obtenerPrimerServicioPorCategoria(concepto.categoria);
+            var montoCategoria = primerServicio ? parseFloat(primerServicio.montoSugerido) : obtenerMontoDemoPorCategoria(concepto.categoria);
+
+            if (isNaN(montoCategoria) || montoCategoria <= 0) {
+                montoCategoria = obtenerMontoDemoPorCategoria(concepto.categoria);
+            }
+
             concepto.servicioCodigo = primerServicio ? primerServicio.codigo : '';
             concepto.descripcionBase = primerServicio ? primerServicio.descripcionBase : 'CONCEPTO';
-            concepto.monto = primerServicio ? parseFloat(primerServicio.montoSugerido) : 0;
+            concepto.monto = montoCategoria;
+
             actualizarDescripcionConcepto(concepto, true);
             pintarConceptosRecibo();
             calcularTotalesRecibo();
@@ -368,11 +478,21 @@
 
         if (propiedad === 'servicioCodigo') {
             concepto.servicioCodigo = parseInt(campo.value, 10);
+
             var servicio = buscarServicioPorCodigo(concepto.servicioCodigo);
 
             if (servicio) {
+                var montoServicio = parseFloat(servicio.montoSugerido);
+
+                if (isNaN(montoServicio) || montoServicio <= 0) {
+                    montoServicio = obtenerMontoDemoPorCategoria(concepto.categoria);
+                }
+
                 concepto.descripcionBase = servicio.descripcionBase;
-                concepto.monto = parseFloat(servicio.montoSugerido);
+                concepto.monto = montoServicio;
+            } else {
+                concepto.descripcionBase = 'CONCEPTO';
+                concepto.monto = obtenerMontoDemoPorCategoria(concepto.categoria);
             }
 
             actualizarDescripcionConcepto(concepto, true);

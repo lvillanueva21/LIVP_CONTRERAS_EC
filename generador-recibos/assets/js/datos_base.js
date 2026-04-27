@@ -536,8 +536,8 @@
             return;
         }
 
-        if (isNaN(monto) || monto < 0) {
-            mostrarAviso('warning', 'Monto inválido', 'Ingresa un monto sugerido válido en soles.');
+        if (isNaN(monto) || monto <= 0) {
+            mostrarAviso('warning', 'Monto inválido', 'Ingresa un monto sugerido mayor a cero en soles.');
             return;
         }
 
@@ -1095,7 +1095,7 @@
     function limpiarFormularioServicio() {
         resetFormulario('formServicioBase');
         asignarValor('servicioCategoriaBase', 'Servicios de contabilidad');
-        asignarValor('servicioMontoBase', '0.00');
+        asignarValor('servicioMontoBase', '1.00');
         asignarValor('servicioEstadoBase', 'Activo');
     }
 
