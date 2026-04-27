@@ -532,7 +532,10 @@
 
     function obtenerBotonEliminarConcepto(elemento) {
         while (elemento && elemento !== document) {
-            if (elemento.getAttribute && elemento.getAttribute('data-concepto-codigo')) {
+            if (
+                elemento.getAttribute &&
+                elemento.getAttribute('data-accion-concepto') === 'eliminar'
+            ) {
                 return elemento;
             }
 
@@ -661,7 +664,7 @@
         html += '<td><span class="concepto-descripcion-generada">' + escaparHtml(concepto.descripcionGenerada) + '</span></td>';
         html += '<td><input type="text" class="form-control concepto-input--descripcion" value="' + escaparHtml(concepto.descripcionEditable) + '" data-concepto-codigo="' + concepto.codigo + '" data-concepto-campo="descripcionEditable"></td>';
         html += '<td><input type="number" class="form-control concepto-monto" min="0" step="0.01" value="' + obtenerMontoInput(concepto.monto) + '" data-concepto-codigo="' + concepto.codigo + '" data-concepto-campo="monto"></td>';
-        html += '<td><button type="button" class="btn btn--danger btn--sm" data-concepto-codigo="' + concepto.codigo + '">Eliminar</button></td>';
+        html += '<td><button type="button" class="btn btn--danger btn--sm" data-accion-concepto="eliminar" data-concepto-codigo="' + concepto.codigo + '">Eliminar</button></td>';
         html += '</tr>';
 
         return html;
