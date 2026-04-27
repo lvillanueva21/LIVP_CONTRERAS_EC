@@ -2528,3 +2528,44 @@ textarea.form-control {
         flex-direction: column;
     }
 }
+
+/* =========================================================
+   Exportación estable JPG/PDF
+   ========================================================= */
+
+.exportacion-recibo-captura {
+    position: fixed !important;
+    left: 50% !important;
+    top: 18px !important;
+    width: 1120px !important;
+    max-width: 1120px !important;
+    min-height: 40px !important;
+    padding: 20px !important;
+    background: #ffffff !important;
+    z-index: 999999 !important;
+    pointer-events: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(-50%) !important;
+    overflow: visible !important;
+}
+
+.exportacion-recibo-captura .recibo-preview {
+    box-shadow: none !important;
+}
+
+.exportando-recibo {
+    cursor: progress !important;
+}
+
+.exportando-recibo button,
+.exportando-recibo a,
+.exportando-recibo input,
+.exportando-recibo select,
+.exportando-recibo textarea {
+    pointer-events: none !important;
+}
+
+.exportando-recibo .exportacion-recibo-captura {
+    pointer-events: none !important;
+}

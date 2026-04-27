@@ -101,11 +101,11 @@
             }
 
             if (accion === 'jpg') {
-                descargarReciboJpg(codigo);
+                descargarReciboJpg(codigo, boton);
             }
 
             if (accion === 'pdf') {
-                descargarReciboPdf(codigo);
+                descargarReciboPdf(codigo, boton);
             }
 
             if (accion === 'duplicar') {
@@ -221,7 +221,7 @@
         mostrarAviso('info', 'Vista previa abierta', 'Se abrió el recibo en una nueva pestaña.');
     }
 
-    function descargarReciboJpg(codigo) {
+    function descargarReciboJpg(codigo, boton) {
         var recibo = buscarReciboPorCodigo(codigo);
 
         if (!recibo) {
@@ -234,34 +234,52 @@
             return;
         }
 
-        var contenedor = crearContenedorTemporalRecibo(recibo);
-
+        bloquearBotonExportacion(boton, true);
         document.body.classList.add('exportando-recibo');
 
-        window.html2canvas(contenedor, {
-            scale: 2,
-            backgroundColor: '#ffffff',
-            useCORS: true
-        }).then(function (canvas) {
-            var enlace = document.createElement('a');
+        var contenedor = crearContenedorTemporalRecibo(recibo);
 
-            enlace.href = canvas.toDataURL('image/jpeg', 0.95);
-            enlace.download = obtenerNombreArchivo(recibo, 'jpg');
-            document.body.appendChild(enlace);
-            enlace.click();
-            document.body.removeChild(enlace);
+        esperarRenderizadoRecibo(contenedor)
+            .then(function () {
+                return window.html2canvas(contenedor, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: contenedor.scrollWidth,
+                    windowHeight: contenedor.scrollHeight
+                });
+            })
+            .then(function (canvas) {
+                if (!canvas || canvas.width === 0 || canvas.height === 0) {
+                    throw new Error('Canvas vacío');
+                }
 
-            registrarAuditoriaExportacion('JPG descargado', 'Se descargó el JPG del recibo temporal ' + recibo.codigo + '.');
-            mostrarAviso('success', 'JPG descargado', 'El recibo se descargó como imagen JPG.');
-        }).catch(function () {
-            mostrarAviso('error', 'Error al generar JPG', 'No se pudo generar la imagen del recibo.');
-        }).finally(function () {
-            eliminarContenedorTemporalRecibo(contenedor);
-            document.body.classList.remove('exportando-recibo');
-        });
+                var enlace = document.createElement('a');
+
+                enlace.href = canvas.toDataURL('image/jpeg', 0.95);
+                enlace.download = obtenerNombreArchivo(recibo, 'jpg');
+                document.body.appendChild(enlace);
+                enlace.click();
+                document.body.removeChild(enlace);
+
+                registrarAuditoriaExportacion('JPG descargado', 'Se descargó el JPG del recibo temporal ' + recibo.codigo + '.');
+                mostrarAviso('success', 'JPG descargado', 'El recibo se descargó como imagen JPG.');
+            })
+            .catch(function () {
+                mostrarAviso('error', 'Error al generar JPG', 'No se pudo generar la imagen del recibo.');
+            })
+            .then(function () {
+                eliminarContenedorTemporalRecibo(contenedor);
+                document.body.classList.remove('exportando-recibo');
+                bloquearBotonExportacion(boton, false);
+            });
     }
 
-    function descargarReciboPdf(codigo) {
+    function descargarReciboPdf(codigo, boton) {
         var recibo = buscarReciboPorCodigo(codigo);
 
         if (!recibo) {
@@ -269,43 +287,106 @@
             return;
         }
 
-        if (typeof window.html2pdf !== 'function') {
-            mostrarAviso('error', 'Librería no disponible', 'No se cargó html2pdf.js desde CDN.');
+        if (typeof window.html2canvas !== 'function') {
+            mostrarAviso('error', 'Librería no disponible', 'No se cargó html2canvas desde CDN.');
             return;
         }
 
-        var contenedor = crearContenedorTemporalRecibo(recibo);
-        var orientacion = obtenerOrientacionPdf(recibo);
-        var opciones = {
-            margin: 8,
-            filename: obtenerNombreArchivo(recibo, 'pdf'),
-            image: {
-                type: 'jpeg',
-                quality: 0.98
-            },
-            html2canvas: {
-                scale: 2,
-                backgroundColor: '#ffffff',
-                useCORS: true
-            },
-            jsPDF: {
-                unit: 'mm',
-                format: 'a4',
-                orientation: orientacion
-            }
-        };
+        var ConstructorJsPdf = obtenerConstructorJsPdf();
 
+        if (!ConstructorJsPdf) {
+            mostrarAviso('error', 'Librería no disponible', 'No se encontró jsPDF dentro de html2pdf.js.');
+            return;
+        }
+
+        bloquearBotonExportacion(boton, true);
         document.body.classList.add('exportando-recibo');
 
-        window.html2pdf().set(opciones).from(contenedor).save().then(function () {
-            registrarAuditoriaExportacion('PDF descargado', 'Se descargó el PDF del recibo temporal ' + recibo.codigo + '.');
-            mostrarAviso('success', 'PDF descargado', 'El recibo se descargó como PDF.');
-        }).catch(function () {
-            mostrarAviso('error', 'Error al generar PDF', 'No se pudo generar el PDF del recibo.');
-        }).finally(function () {
-            eliminarContenedorTemporalRecibo(contenedor);
-            document.body.classList.remove('exportando-recibo');
+        var contenedor = crearContenedorTemporalRecibo(recibo);
+        var orientacion = obtenerOrientacionPdf(recibo);
+
+        esperarRenderizadoRecibo(contenedor)
+            .then(function () {
+                return window.html2canvas(contenedor, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: contenedor.scrollWidth,
+                    windowHeight: contenedor.scrollHeight
+                });
+            })
+            .then(function (canvas) {
+                if (!canvas || canvas.width === 0 || canvas.height === 0) {
+                    throw new Error('Canvas vacío');
+                }
+
+                crearPdfDesdeCanvas(canvas, recibo, orientacion, ConstructorJsPdf);
+
+                registrarAuditoriaExportacion('PDF descargado', 'Se descargó el PDF del recibo temporal ' + recibo.codigo + '.');
+                mostrarAviso('success', 'PDF descargado', 'El recibo se descargó como PDF.');
+            })
+            .catch(function () {
+                mostrarAviso('error', 'Error al generar PDF', 'No se pudo generar el PDF del recibo.');
+            })
+            .then(function () {
+                eliminarContenedorTemporalRecibo(contenedor);
+                document.body.classList.remove('exportando-recibo');
+                bloquearBotonExportacion(boton, false);
+            });
+    }
+
+    function crearPdfDesdeCanvas(canvas, recibo, orientacion, ConstructorJsPdf) {
+        var pdf = new ConstructorJsPdf({
+            orientation: orientacion,
+            unit: 'mm',
+            format: 'a4'
         });
+
+        var margen = 8;
+        var anchoPagina = pdf.internal.pageSize.getWidth();
+        var altoPagina = pdf.internal.pageSize.getHeight();
+        var anchoDisponible = anchoPagina - (margen * 2);
+        var altoDisponible = altoPagina - (margen * 2);
+        var imagen = canvas.toDataURL('image/jpeg', 0.98);
+        var altoImagen = canvas.height * anchoDisponible / canvas.width;
+        var pagina = 0;
+        var altoRestante = altoImagen;
+
+        while (altoRestante > 0) {
+            if (pagina > 0) {
+                pdf.addPage();
+            }
+
+            pdf.addImage(
+                imagen,
+                'JPEG',
+                margen,
+                margen - (pagina * altoDisponible),
+                anchoDisponible,
+                altoImagen
+            );
+
+            altoRestante -= altoDisponible;
+            pagina++;
+        }
+
+        pdf.save(obtenerNombreArchivo(recibo, 'pdf'));
+    }
+
+    function obtenerConstructorJsPdf() {
+        if (window.jspdf && window.jspdf.jsPDF) {
+            return window.jspdf.jsPDF;
+        }
+
+        if (window.jsPDF) {
+            return window.jsPDF;
+        }
+
+        return null;
     }
 
     function duplicarReciboTemporal(codigo) {
@@ -379,6 +460,63 @@
         if (contenedor && contenedor.parentNode) {
             contenedor.parentNode.removeChild(contenedor);
         }
+    }
+
+    function esperarRenderizadoRecibo(contenedor) {
+        return new Promise(function (resolver) {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    esperarImagenesRecibo(contenedor).then(function () {
+                        setTimeout(function () {
+                            resolver();
+                        }, 120);
+                    });
+                });
+            });
+        });
+    }
+
+    function esperarImagenesRecibo(contenedor) {
+        var imagenes = contenedor.querySelectorAll('img');
+        var promesas = [];
+
+        for (var i = 0; i < imagenes.length; i++) {
+            promesas.push(esperarImagen(imagenes[i]));
+        }
+
+        return Promise.all(promesas);
+    }
+
+    function esperarImagen(imagen) {
+        return new Promise(function (resolver) {
+            if (!imagen) {
+                resolver();
+                return;
+            }
+
+            if (imagen.complete && imagen.naturalWidth !== 0) {
+                resolver();
+                return;
+            }
+
+            var terminado = false;
+
+            function finalizar() {
+                if (terminado) {
+                    return;
+                }
+
+                terminado = true;
+                resolver();
+            }
+
+            imagen.onload = finalizar;
+            imagen.onerror = finalizar;
+
+            setTimeout(function () {
+                finalizar();
+            }, 1500);
+        });
     }
 
     function obtenerHtmlImprimible(recibo) {
@@ -676,26 +814,25 @@
             '}';
     }
 
-    function obtenerCssLocal() {
-        var css = '';
-
-        for (var i = 0; i < document.styleSheets.length; i++) {
-            try {
-                var reglas = document.styleSheets[i].cssRules;
-
-                if (!reglas) {
-                    continue;
-                }
-
-                for (var j = 0; j < reglas.length; j++) {
-                    css += reglas[j].cssText + '\n';
-                }
-            } catch (error) {
-                css += '';
-            }
+    function bloquearBotonExportacion(boton, bloquear) {
+        if (!boton) {
+            return;
         }
 
-        return css;
+        boton.disabled = bloquear;
+
+        if (bloquear) {
+            boton.setAttribute('data-texto-original', boton.textContent);
+            boton.textContent = 'Generando...';
+        } else {
+            var textoOriginal = boton.getAttribute('data-texto-original');
+
+            if (textoOriginal) {
+                boton.textContent = textoOriginal;
+            }
+
+            boton.removeAttribute('data-texto-original');
+        }
     }
 
     function pintarDashboardFinal() {
