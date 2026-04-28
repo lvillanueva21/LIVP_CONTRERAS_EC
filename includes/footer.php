@@ -23,5 +23,8 @@ $config = app_config();
 <script src="<?php echo e(asset_url('plugins/toastr/toastr.min.js')); ?>"></script>
 <script src="<?php echo e(asset_url('dist/js/adminlte.min.js')); ?>"></script>
 <script src="<?php echo e(asset_url('assets/js/app.js')); ?>"></script>
+<script src="<?php echo e(asset_url('assets/js/ui.js')); ?>"></script>
+<script src="<?php echo e(asset_url('assets/js/ajax.js')); ?>"></script>
+<script src="<?php echo e(asset_url('assets/js/tablas.js')); ?>"></script>
 </body>
 </html>
