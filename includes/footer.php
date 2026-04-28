@@ -29,5 +29,11 @@ $config = app_config();
 <?php if (isset($app_current_module) && $app_current_module === 'clientes_servicios') { ?>
 <script src="<?php echo e(asset_url('assets/js/clientes_servicios.js')); ?>"></script>
 <?php } ?>
+<?php if (isset($app_current_module) && $app_current_module === 'metodos_pago') { ?>
+<script src="<?php echo e(asset_url('assets/js/metodos_pago.js')); ?>"></script>
+<?php } ?>
+<?php if (isset($app_current_module) && $app_current_module === 'personalizacion') { ?>
+<script src="<?php echo e(asset_url('assets/js/personalizacion.js')); ?>"></script>
+<?php } ?>
 </body>
 </html>

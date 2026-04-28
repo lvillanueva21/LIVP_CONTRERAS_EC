@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `ecc_servicio_etiquetas` (
 
 CREATE TABLE IF NOT EXISTS `ecc_metodos_pago` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `titulo_visible` VARCHAR(120) NOT NULL DEFAULT '',
     `tipo` ENUM('Cuenta de ahorro','Yape','Plin') NOT NULL,
     `titular` VARCHAR(180) NOT NULL,
     `banco` VARCHAR(120) NULL,
@@ -169,6 +170,7 @@ CREATE TABLE IF NOT EXISTS `ecc_configuracion_empresa` (
     `id` TINYINT UNSIGNED NOT NULL,
     `ruc` VARCHAR(20) NOT NULL,
     `razon_social` VARCHAR(180) NOT NULL,
+    `nombre_comercial` VARCHAR(180) NULL,
     `rubro` VARCHAR(180) NULL,
     `direccion` VARCHAR(255) NULL,
     `correo` VARCHAR(120) NULL,
@@ -193,7 +195,6 @@ CREATE TABLE IF NOT EXISTS `ecc_configuracion_empresa` (
         FOREIGN KEY (`logo_archivo_id`) REFERENCES `ecc_archivos` (`id`)
         ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 CREATE TABLE IF NOT EXISTS `ecc_plantillas` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -478,6 +479,15 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
      Pagado
      Anulado
    - Se registran datos demo de aviso y periodo para servicios asignados.
+
+
+      2026-04-28 - FASE 6
+   - Se implementan los módulos Métodos de pago y Personalización.
+   - Se agrega ecc_metodos_pago.titulo_visible.
+   - Se agrega ecc_configuracion_empresa.nombre_comercial.
+   - Se crea gestión local de archivos para logos usando almacen/AAAA/MM/DD/categoria/.
+   - Se registran logos en ecc_archivos.
+   - Se mantienen los métodos Cuenta de ahorro, Yape y Plin.
 */
 
 
@@ -549,12 +559,13 @@ ON DUPLICATE KEY UPDATE
 
 
 INSERT INTO `ecc_metodos_pago`
-(`id`, `tipo`, `titular`, `banco`, `numero_cuenta`, `cci`, `numero_celular`, `descripcion`, `orden`, `estado`, `created_by_external_id`)
+(`id`, `titulo_visible`, `tipo`, `titular`, `banco`, `numero_cuenta`, `cci`, `numero_celular`, `descripcion`, `orden`, `estado`, `created_by_external_id`)
 VALUES
-(1, 'Cuenta de ahorro', 'Gerente Demo', 'BCP', '19100000000001', '0021910000000000000001', NULL, 'Cuenta de ahorro principal', 1, 1, 'demo'),
-(2, 'Yape', 'Gerente Demo', NULL, NULL, NULL, '999888777', 'Yape principal', 2, 1, 'demo'),
-(3, 'Plin', 'Gerente Demo', NULL, NULL, NULL, '999888777', 'Plin principal', 3, 1, 'demo')
+(1, 'Cuenta de ahorro BCP', 'Cuenta de ahorro', 'Gerente Demo', 'BCP', '19100000000001', '0021910000000000000001', NULL, 'Cuenta de ahorro principal', 1, 1, 'demo'),
+(2, 'Yape', 'Yape', 'Gerente Demo', NULL, NULL, NULL, '999888777', 'Yape principal', 2, 1, 'demo'),
+(3, 'Plin', 'Plin', 'Gerente Demo', NULL, NULL, NULL, '999888777', 'Plin principal', 3, 1, 'demo')
 ON DUPLICATE KEY UPDATE
+`titulo_visible` = VALUES(`titulo_visible`),
 `tipo` = VALUES(`tipo`),
 `titular` = VALUES(`titular`),
 `banco` = VALUES(`banco`),
@@ -568,12 +579,13 @@ ON DUPLICATE KEY UPDATE
 
 
 INSERT INTO `ecc_configuracion_empresa`
-(`id`, `ruc`, `razon_social`, `rubro`, `direccion`, `correo`, `celular`, `logo_archivo_id`, `logo_tipo`, `logo_zoom`, `logo_pos_x`, `logo_pos_y`, `color_tipo`, `color_primario`, `color_secundario`, `pie_pagina`, `created_by_external_id`)
+(`id`, `ruc`, `razon_social`, `nombre_comercial`, `rubro`, `direccion`, `correo`, `celular`, `logo_archivo_id`, `logo_tipo`, `logo_zoom`, `logo_pos_x`, `logo_pos_y`, `color_tipo`, `color_primario`, `color_secundario`, `pie_pagina`, `created_by_external_id`)
 VALUES
-(1, '00000000000', 'Estudio Contable Contreras', 'Servicios contables y tributarios', 'Dirección pendiente de configurar', 'correo@contreras.local', '999999999', NULL, 'Rectangular', 1.00, 0.00, 0.00, 'Solido', '#1f4e79', NULL, 'Gracias por confiar en Estudio Contable Contreras.', 'demo')
+(1, '00000000000', 'Estudio Contable Contreras', 'Estudio Contable Contreras', 'Servicios contables y tributarios', 'Dirección pendiente de configurar', 'correo@contreras.local', '999999999', NULL, 'Rectangular', 1.00, 0.00, 0.00, 'Solido', '#1f4e79', NULL, 'Gracias por confiar en Estudio Contable Contreras.', 'demo')
 ON DUPLICATE KEY UPDATE
 `ruc` = VALUES(`ruc`),
 `razon_social` = VALUES(`razon_social`),
+`nombre_comercial` = VALUES(`nombre_comercial`),
 `rubro` = VALUES(`rubro`),
 `direccion` = VALUES(`direccion`),
 `correo` = VALUES(`correo`),
