@@ -65,21 +65,22 @@
             }));
         },
 
-        sendForm: function (form, options) {
-            var $form = $(form);
-            var method = String($form.attr('method') || 'POST').toUpperCase();
-            var url = $form.attr('action') || window.location.href;
-            var hasFiles = $form.find('input[type="file"]').length > 0;
-            var data = hasFiles ? new FormData($form[0]) : $form.serialize();
+sendForm: function (form, options) {
+    var $form = $(form);
+    var config = options || {};
+    var method = String($form.attr('method') || config.method || 'POST').toUpperCase();
+    var url = config.url || $form.attr('action') || window.location.href;
+    var hasFiles = $form.find('input[type="file"]').length > 0;
+    var data = hasFiles ? new FormData($form[0]) : $form.serialize();
 
-            return this.request($.extend({}, options || {}, {
-                url: url,
-                method: method,
-                data: data,
-                processData: !hasFiles,
-                contentType: hasFiles ? false : 'application/x-www-form-urlencoded; charset=UTF-8'
-            }));
-        },
+    return this.request($.extend({}, config, {
+        url: url,
+        method: method,
+        data: data,
+        processData: !hasFiles,
+        contentType: hasFiles ? false : 'application/x-www-form-urlencoded; charset=UTF-8'
+    }));
+},
 
         handleSuccess: function (response, config) {
             if (config.notify && response && response.message) {
