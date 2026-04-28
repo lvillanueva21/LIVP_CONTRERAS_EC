@@ -248,11 +248,14 @@ CREATE TABLE IF NOT EXISTS `ecc_cliente_servicios` (
     `cliente_id` INT UNSIGNED NOT NULL,
     `servicio_id` INT UNSIGNED NOT NULL,
     `descripcion_personalizada` TEXT NULL,
+    `periodo` VARCHAR(60) NULL,
     `monto` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     `bloque_documento` ENUM('Actuales','Pendientes de pago','Otros servicios o trámites') NOT NULL DEFAULT 'Actuales',
     `estado` ENUM('Pendiente','En proforma','Pagado','Anulado') NOT NULL DEFAULT 'Pendiente',
     `fecha_asignacion` DATE NOT NULL,
     `fecha_vencimiento` DATE NULL,
+    `fecha_aviso` DATE NULL,
+    `modo_aviso` ENUM('Sin aviso','Fecha exacta','Antes de vencer','Manual') NOT NULL DEFAULT 'Sin aviso',
     `observacion` TEXT NULL,
     `usuario_externo_id` VARCHAR(80) NULL,
     `created_by_external_id` VARCHAR(80) NULL,
@@ -264,6 +267,8 @@ CREATE TABLE IF NOT EXISTS `ecc_cliente_servicios` (
     KEY `idx_ecc_cliente_servicios_servicio` (`servicio_id`),
     KEY `idx_ecc_cliente_servicios_estado` (`estado`),
     KEY `idx_ecc_cliente_servicios_vencimiento` (`fecha_vencimiento`),
+    KEY `idx_ecc_cliente_servicios_fecha_aviso` (`fecha_aviso`),
+    KEY `idx_ecc_cliente_servicios_modo_aviso` (`modo_aviso`),
     CONSTRAINT `fk_ecc_cliente_servicios_cliente`
         FOREIGN KEY (`cliente_id`) REFERENCES `ecc_clientes` (`id`)
         ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -456,6 +461,23 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se agregan claves primarias, índices y relaciones principales.
    - Se agregan campos de preparación para usuario externo futuro.
    - Se agregan datos de prueba separados.
+
+
+      2026-04-28 - FASE 5
+   - Se implementa el módulo Clientes y servicios.
+   - Se actualiza ecc_cliente_servicios con:
+     periodo
+     fecha_aviso
+     modo_aviso
+   - Se agregan los índices:
+     idx_ecc_cliente_servicios_fecha_aviso
+     idx_ecc_cliente_servicios_modo_aviso
+   - Se mantiene el flujo de estados:
+     Pendiente
+     En proforma
+     Pagado
+     Anulado
+   - Se registran datos demo de aviso y periodo para servicios asignados.
 */
 
 
@@ -603,21 +625,24 @@ ON DUPLICATE KEY UPDATE
 
 
 INSERT INTO `ecc_cliente_servicios`
-(`id`, `cliente_id`, `servicio_id`, `descripcion_personalizada`, `monto`, `bloque_documento`, `estado`, `fecha_asignacion`, `fecha_vencimiento`, `observacion`, `created_by_external_id`)
+(`id`, `cliente_id`, `servicio_id`, `descripcion_personalizada`, `periodo`, `monto`, `bloque_documento`, `estado`, `fecha_asignacion`, `fecha_vencimiento`, `fecha_aviso`, `modo_aviso`, `observacion`, `created_by_external_id`)
 VALUES
-(1, 1, 1, 'Declaración mensual abril 2026', 150.00, 'Actuales', 'Pagado', '2026-04-01', '2026-04-30', 'Servicio pagado parcialmente desde proforma demo.', 'demo'),
-(2, 1, 2, 'Planilla mensual abril 2026', 120.00, 'Pendientes de pago', 'Pendiente', '2026-04-01', '2026-04-30', 'Servicio pendiente luego de pago parcial.', 'demo'),
-(3, 1, 3, 'Asesoría contable especial', 200.00, 'Otros servicios o trámites', 'Pendiente', '2026-04-10', NULL, 'Servicio pendiente para próxima proforma.', 'demo'),
-(4, 2, 4, 'Trámite SUNAT persona natural', 80.00, 'Actuales', 'Pendiente', '2026-04-15', '2026-04-29', 'Servicio pendiente demo.', 'demo')
+(1, 1, 1, 'Declaración mensual abril 2026', 'Abril 2026', 150.00, 'Actuales', 'Pagado', '2026-04-01', '2026-04-30', '2026-04-29', 'Fecha exacta', 'Servicio pagado parcialmente desde proforma demo.', 'demo'),
+(2, 1, 2, 'Planilla mensual abril 2026', 'Abril 2026', 120.00, 'Pendientes de pago', 'Pendiente', '2026-04-01', '2026-04-30', '2026-04-29', 'Fecha exacta', 'Servicio pendiente luego de pago parcial.', 'demo'),
+(3, 1, 3, 'Asesoría contable especial', 'Abril 2026', 200.00, 'Otros servicios o trámites', 'Pendiente', '2026-04-10', NULL, NULL, 'Sin aviso', 'Servicio pendiente para próxima proforma.', 'demo'),
+(4, 2, 4, 'Trámite SUNAT persona natural', 'Abril 2026', 80.00, 'Actuales', 'Pendiente', '2026-04-15', '2026-04-29', '2026-04-28', 'Fecha exacta', 'Servicio pendiente demo.', 'demo')
 ON DUPLICATE KEY UPDATE
 `cliente_id` = VALUES(`cliente_id`),
 `servicio_id` = VALUES(`servicio_id`),
 `descripcion_personalizada` = VALUES(`descripcion_personalizada`),
+`periodo` = VALUES(`periodo`),
 `monto` = VALUES(`monto`),
 `bloque_documento` = VALUES(`bloque_documento`),
 `estado` = VALUES(`estado`),
 `fecha_asignacion` = VALUES(`fecha_asignacion`),
 `fecha_vencimiento` = VALUES(`fecha_vencimiento`),
+`fecha_aviso` = VALUES(`fecha_aviso`),
+`modo_aviso` = VALUES(`modo_aviso`),
 `observacion` = VALUES(`observacion`),
 `updated_by_external_id` = 'demo';
 

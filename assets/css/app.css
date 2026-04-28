@@ -361,3 +361,48 @@ body {
         justify-content: center;
     }
 }
+
+.cs-resumen-cliente {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.cs-resumen-cliente strong {
+    color: #343a40;
+}
+
+.cs-etiquetas-linea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.cs-servicio-descripcion {
+    color: #6c757d;
+    font-size: 0.82rem;
+    margin-top: 0.25rem;
+}
+
+#servicioEtiquetas {
+    min-height: 110px;
+}
+
+#detalleClienteContenido .card {
+    margin-bottom: 0;
+}
+
+#modalDetalleCliente .modal-body {
+    background: #f4f6f9;
+}
+
+#modalServicioCliente textarea {
+    resize: vertical;
+}
+
+@media (max-width: 767.98px) {
+    #modalDetalleCliente .modal-dialog,
+    #modalServicioCliente .modal-dialog,
+    #modalCliente .modal-dialog {
+        margin: 0.5rem;
+    }
+}
