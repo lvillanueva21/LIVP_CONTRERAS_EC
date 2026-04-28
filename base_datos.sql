@@ -202,6 +202,7 @@ CREATE TABLE IF NOT EXISTS `ecc_plantillas` (
     `descripcion` TEXT NULL,
     `orientacion` ENUM('Vertical','Horizontal') NOT NULL DEFAULT 'Vertical',
     `logo_visible` TINYINT(1) NOT NULL DEFAULT 1,
+    `logo_tipo` ENUM('Cuadrado','Rectangular','Banner') NOT NULL DEFAULT 'Rectangular',
     `datos_empresa_visible` TINYINT(1) NOT NULL DEFAULT 1,
     `datos_cliente_visible` TINYINT(1) NOT NULL DEFAULT 1,
     `color_tipo` ENUM('Solido','Degradado') NOT NULL DEFAULT 'Solido',
@@ -488,6 +489,16 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se crea gestión local de archivos para logos usando almacen/AAAA/MM/DD/categoria/.
    - Se registran logos en ecc_archivos.
    - Se mantienen los métodos Cuenta de ahorro, Yape y Plin.
+
+
+      2026-04-28 - FASE 7
+   - Se implementa el módulo Plantillas.
+   - Se agrega ecc_plantillas.logo_tipo.
+   - Se permite crear, editar, activar e inactivar plantillas.
+   - Se agrega vista previa de plantilla.
+   - Se permite controlar orientación, logo, datos empresa, datos cliente, métodos de pago, color y pie de página.
+   - Se confirma que la plantilla no controla bloques de servicios.
+   - Los bloques Actuales, Pendientes de pago y Otros servicios o trámites se mostrarán automáticamente si tienen ítems.
 */
 
 
@@ -602,14 +613,15 @@ ON DUPLICATE KEY UPDATE
 
 
 INSERT INTO `ecc_plantillas`
-(`id`, `nombre`, `descripcion`, `orientacion`, `logo_visible`, `datos_empresa_visible`, `datos_cliente_visible`, `color_tipo`, `color_primario`, `color_secundario`, `pie_pagina_visible`, `pie_pagina`, `es_predeterminada`, `estado`, `created_by_external_id`)
+(`id`, `nombre`, `descripcion`, `orientacion`, `logo_visible`, `logo_tipo`, `datos_empresa_visible`, `datos_cliente_visible`, `color_tipo`, `color_primario`, `color_secundario`, `pie_pagina_visible`, `pie_pagina`, `es_predeterminada`, `estado`, `created_by_external_id`)
 VALUES
-(1, 'Plantilla principal', 'Plantilla demo principal para proformas y recibos.', 'Vertical', 1, 1, 1, 'Solido', '#1f4e79', NULL, 1, 'Documento generado por Estudio Contable Contreras.', 1, 1, 'demo'),
-(2, 'Plantilla simple', 'Plantilla demo simple sin diseño avanzado.', 'Vertical', 0, 1, 1, 'Solido', '#343a40', NULL, 1, 'Documento informativo.', 0, 1, 'demo')
+(1, 'Plantilla principal', 'Plantilla demo principal para proformas y recibos.', 'Vertical', 1, 'Rectangular', 1, 1, 'Solido', '#1f4e79', NULL, 1, 'Documento generado por Estudio Contable Contreras.', 1, 1, 'demo'),
+(2, 'Plantilla simple', 'Plantilla demo simple sin diseño avanzado.', 'Vertical', 0, 'Cuadrado', 1, 1, 'Solido', '#343a40', NULL, 1, 'Documento informativo.', 0, 1, 'demo')
 ON DUPLICATE KEY UPDATE
 `descripcion` = VALUES(`descripcion`),
 `orientacion` = VALUES(`orientacion`),
 `logo_visible` = VALUES(`logo_visible`),
+`logo_tipo` = VALUES(`logo_tipo`),
 `datos_empresa_visible` = VALUES(`datos_empresa_visible`),
 `datos_cliente_visible` = VALUES(`datos_cliente_visible`),
 `color_tipo` = VALUES(`color_tipo`),
