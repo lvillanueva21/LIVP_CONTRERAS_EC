@@ -219,7 +219,7 @@ function rb_listar_metodos_pago()
         SELECT *
         FROM ecc_metodos_pago
         WHERE estado = 1
-        ORDER BY orden ASC, id ASC
+        ORDER BY CASE WHEN orden = 0 THEN 999999 ELSE orden END ASC, id ASC
     ");
 
     return $stmt->fetchAll();

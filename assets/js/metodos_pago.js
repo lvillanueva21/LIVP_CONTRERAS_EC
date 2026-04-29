@@ -23,17 +23,7 @@
 
             $('#formMetodoPago').on('submit', function (event) {
                 event.preventDefault();
-
-                AppAjax.sendForm(this, {
-                    url: MetodosPago.ajaxUrl,
-                    onSuccess: function (response) {
-                        if (response && response.ok) {
-                            $('#metodosPagoTablaContainer').html(response.html);
-                            AppTablas.refresh();
-                            AppUI.closeModal('#modalMetodoPago');
-                        }
-                    }
-                });
+                MetodosPago.guardarFormulario();
             });
 
             $(document).on('click', '.btnEditarMetodoPago', function () {
@@ -47,6 +37,15 @@
 
                 MetodosPago.confirmar(texto, function () {
                     MetodosPago.cambiarEstado(id);
+                });
+            });
+
+            $(document).on('click', '.btnEliminarMetodoPago', function () {
+                var id = $(this).attr('data-id');
+                var texto = 'Se eliminará físicamente este método de pago. Esta acción no se puede deshacer.';
+
+                MetodosPago.confirmar(texto, function () {
+                    MetodosPago.eliminar(id);
                 });
             });
 
@@ -67,8 +66,39 @@
             $('#metodoTipo').val('Cuenta de ahorro');
             $('#metodoEstado').val('1');
             $('#metodoOrden').val('1');
+            $('#metodoTomarOrden').val('0');
             this.actualizarTipo();
             AppUI.refresh();
+        },
+
+        guardarFormulario: function () {
+            AppAjax.sendForm($('#formMetodoPago')[0], {
+                url: MetodosPago.ajaxUrl,
+                onSuccess: function (response) {
+                    if (response && response.ok) {
+                        $('#metodosPagoTablaContainer').html(response.html);
+                        AppTablas.refresh();
+                        AppUI.closeModal('#modalMetodoPago');
+                    }
+                },
+                onError: function (xhr) {
+                    var data = xhr && xhr.responseJSON ? xhr.responseJSON : null;
+
+                    if (!data || data.code !== 'orden_ocupado') {
+                        return;
+                    }
+
+                    var ocupado = data.ocupado || {};
+                    var nombre = ocupado.titulo_visible || 'otro método';
+                    var orden = ocupado.orden || $('#metodoOrden').val();
+                    var texto = 'El orden ' + orden + ' ya está asignado a "' + nombre + '". Si confirmas, este método tomará ese orden y el anterior quedará sin orden.';
+
+                    MetodosPago.confirmar(texto, function () {
+                        $('#metodoTomarOrden').val('1');
+                        MetodosPago.guardarFormulario();
+                    });
+                }
+            });
         },
 
         actualizarTipo: function () {
@@ -110,6 +140,7 @@
                     $('#metodoDescripcion').val(metodo.descripcion);
                     $('#metodoOrden').val(metodo.orden);
                     $('#metodoEstado').val(String(metodo.estado));
+                    $('#metodoTomarOrden').val('0');
 
                     MetodosPago.actualizarTipo();
                     AppUI.refresh();
@@ -121,6 +152,20 @@
         cambiarEstado: function (id) {
             AppAjax.post(this.ajaxUrl, {
                 action: 'cambiar_estado_metodo_pago',
+                id: id
+            }, {
+                onSuccess: function (response) {
+                    if (response && response.ok) {
+                        $('#metodosPagoTablaContainer').html(response.html);
+                        AppTablas.refresh();
+                    }
+                }
+            });
+        },
+
+        eliminar: function (id) {
+            AppAjax.post(this.ajaxUrl, {
+                action: 'eliminar_metodo_pago',
                 id: id
             }, {
                 onSuccess: function (response) {

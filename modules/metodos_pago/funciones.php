@@ -17,7 +17,7 @@ function mp_listar()
     $stmt = $pdo->query("
         SELECT *
         FROM ecc_metodos_pago
-        ORDER BY orden ASC, id DESC
+        ORDER BY CASE WHEN orden = 0 THEN 999999 ELSE orden END ASC, id DESC
     ");
 
     return $stmt->fetchAll();
@@ -52,7 +52,13 @@ function mp_badge_estado($estado)
         return '<span class="badge badge-success">Activo</span>';
     }
 
-    return '<span class="badge badge-secondary">Inactivo</span>';
+    return '<span class="badge badge-secondary">Desactivado</span>';
+}
+
+function mp_texto_orden($orden)
+{
+    $orden = (int)$orden;
+    return $orden > 0 ? (string)$orden : '<span class="text-muted">Sin orden</span>';
 }
 
 function mp_render_table()
@@ -68,8 +74,9 @@ function mp_render_table()
                 <th>Tipo</th>
                 <th>Datos</th>
                 <th>Titular</th>
+                <th>Orden</th>
                 <th>Estado</th>
-                <th width="130">Acciones</th>
+                <th width="160">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -93,6 +100,7 @@ function mp_render_table()
                         <?php } ?>
                     </td>
                     <td><?php echo e($metodo['titular']); ?></td>
+                    <td><?php echo mp_texto_orden($metodo['orden']); ?></td>
                     <td><?php echo mp_badge_estado($metodo['estado']); ?></td>
                     <td>
                         <div class="app-action-buttons">
@@ -101,6 +109,9 @@ function mp_render_table()
                             </button>
                             <button type="button" class="btn btn-sm <?php echo (int)$metodo['estado'] === 1 ? 'btn-danger' : 'btn-success'; ?> btnCambiarEstadoMetodoPago" data-id="<?php echo e($metodo['id']); ?>" data-estado="<?php echo e($metodo['estado']); ?>" title="Cambiar estado">
                                 <i class="fas <?php echo (int)$metodo['estado'] === 1 ? 'fa-ban' : 'fa-check'; ?>"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger btnEliminarMetodoPago" data-id="<?php echo e($metodo['id']); ?>" title="Eliminar físicamente">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </td>

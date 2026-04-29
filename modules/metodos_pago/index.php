@@ -51,6 +51,7 @@ $tabla_metodos = mp_render_table();
             <div class="modal-body">
                 <input type="hidden" name="action" value="guardar_metodo_pago">
                 <input type="hidden" name="id" id="metodoPagoId" value="0">
+                <input type="hidden" name="tomar_orden" id="metodoTomarOrden" value="0">
 
                 <div class="form-group">
                     <label>Título visible <span class="app-required">*</span></label>
@@ -76,7 +77,7 @@ $tabla_metodos = mp_render_table();
                         <label>Estado</label>
                         <select name="estado" id="metodoEstado" class="custom-select">
                             <option value="1">Activo</option>
-                            <option value="0">Inactivo</option>
+                            <option value="0">Desactivado</option>
                         </select>
                     </div>
                 </div>

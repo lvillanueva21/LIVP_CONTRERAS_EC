@@ -75,6 +75,7 @@ function mp_action_guardar()
     $numero_celular = mp_clean(mp_request('numero_celular'));
     $descripcion = mp_clean(mp_request('descripcion'));
     $orden = (int)mp_request('orden', 1);
+    $tomar_orden = (int)mp_request('tomar_orden', 0) === 1;
     $estado = (int)mp_request('estado', 1) === 1 ? 1 : 0;
 
     if ($titulo_visible === '') {
@@ -119,6 +120,32 @@ function mp_action_guardar()
         $numero_celular = '';
     }
 
+    $stmtOcupado = $pdo->prepare("
+        SELECT id, titulo_visible, orden
+        FROM ecc_metodos_pago
+        WHERE orden = :orden
+          AND id <> :id
+        LIMIT 1
+    ");
+    $stmtOcupado->execute(array(
+        ':orden' => $orden,
+        ':id' => $id
+    ));
+    $ocupado = $stmtOcupado->fetch();
+
+    if ($ocupado && !$tomar_orden) {
+        mp_json(array(
+            'ok' => false,
+            'code' => 'orden_ocupado',
+            'message' => 'El orden ' . $orden . ' ya está ocupado por "' . $ocupado['titulo_visible'] . '".',
+            'ocupado' => array(
+                'id' => (int)$ocupado['id'],
+                'titulo_visible' => $ocupado['titulo_visible'],
+                'orden' => (int)$ocupado['orden']
+            )
+        ), 422);
+    }
+
     if ($id > 0) {
         $anterior = mp_obtener($id);
 
@@ -127,6 +154,22 @@ function mp_action_guardar()
                 'ok' => false,
                 'message' => 'Método de pago no encontrado.'
             ), 404);
+        }
+
+        if ($ocupado && $tomar_orden) {
+            $previo_ocupado = mp_obtener((int)$ocupado['id']);
+
+            $stmtMover = $pdo->prepare("
+                UPDATE ecc_metodos_pago
+                SET orden = 0, updated_by_external_id = :updated_by_external_id
+                WHERE id = :id
+            ");
+            $stmtMover->execute(array(
+                ':updated_by_external_id' => mp_external_id(),
+                ':id' => (int)$ocupado['id']
+            ));
+
+            mp_auditoria('Reasignar orden método de pago', 'ecc_metodos_pago', (int)$ocupado['id'], 'El método perdió su orden por reemplazo.', $previo_ocupado, mp_obtener((int)$ocupado['id']));
         }
 
         $stmt = $pdo->prepare("
@@ -168,6 +211,22 @@ function mp_action_guardar()
             'message' => 'Método de pago actualizado correctamente.',
             'html' => mp_render_table()
         ));
+    }
+
+    if ($ocupado && $tomar_orden) {
+        $previo_ocupado = mp_obtener((int)$ocupado['id']);
+
+        $stmtMover = $pdo->prepare("
+            UPDATE ecc_metodos_pago
+            SET orden = 0, updated_by_external_id = :updated_by_external_id
+            WHERE id = :id
+        ");
+        $stmtMover->execute(array(
+            ':updated_by_external_id' => mp_external_id(),
+            ':id' => (int)$ocupado['id']
+        ));
+
+        mp_auditoria('Reasignar orden método de pago', 'ecc_metodos_pago', (int)$ocupado['id'], 'El método perdió su orden por reemplazo.', $previo_ocupado, mp_obtener((int)$ocupado['id']));
     }
 
     $stmt = $pdo->prepare("
@@ -239,6 +298,43 @@ function mp_action_cambiar_estado()
     ));
 }
 
+function mp_action_eliminar()
+{
+    $pdo = app_pdo();
+
+    $id = (int)mp_request('id', 0);
+    $metodo = mp_obtener($id);
+
+    if (!$metodo) {
+        mp_json(array(
+            'ok' => false,
+            'message' => 'Método de pago no encontrado.'
+        ), 404);
+    }
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS total FROM ecc_recibos WHERE metodo_pago_id = :id");
+    $stmt->execute(array(':id' => $id));
+    $uso_recibos = (int)$stmt->fetch()['total'];
+
+    if ($uso_recibos > 0) {
+        mp_json(array(
+            'ok' => false,
+            'message' => 'No se puede eliminar: el método ya fue usado en recibos. Puedes desactivarlo.'
+        ), 422);
+    }
+
+    $stmt = $pdo->prepare("DELETE FROM ecc_metodos_pago WHERE id = :id");
+    $stmt->execute(array(':id' => $id));
+
+    mp_auditoria('Eliminar método de pago', 'ecc_metodos_pago', $id, 'Método de pago eliminado físicamente.', $metodo, null);
+
+    mp_json(array(
+        'ok' => true,
+        'message' => 'Método de pago eliminado correctamente.',
+        'html' => mp_render_table()
+    ));
+}
+
 try {
     $action = mp_clean(mp_request('action'));
 
@@ -258,6 +354,11 @@ try {
     if ($action === 'cambiar_estado_metodo_pago') {
         app_require_post();
         mp_action_cambiar_estado();
+    }
+
+    if ($action === 'eliminar_metodo_pago') {
+        app_require_post();
+        mp_action_eliminar();
     }
 
     mp_json(array(
