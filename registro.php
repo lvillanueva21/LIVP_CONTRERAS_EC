@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 define('APP_BOOTSTRAP', true);
 
 require_once __DIR__ . '/includes/config.php';
@@ -93,71 +93,96 @@ if (app_request_method() === 'POST') {
     <link rel="stylesheet" href="<?php echo e(asset_url('dist/css/adminlte.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset_url('assets/css/app.css')); ?>">
 </head>
-<body class="hold-transition register-page app-auth-page">
-<div class="register-box">
-    <div class="card card-outline card-primary">
-        <div class="card-header text-center">
-            <a href="<?php echo e(app_url('login.php')); ?>" class="h1"><b>Registro</b> temporal</a>
+<body class="hold-transition app-auth-page">
+<section class="app-auth-section">
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8 text-center">
+                <h2 class="app-auth-heading">Registro temporal de usuario</h2>
+                <p class="app-auth-subheading">Crea un usuario administrador para usar el sistema.</p>
+            </div>
         </div>
-        <div class="card-body">
-            <p class="login-box-msg">Crear usuario administrador</p>
 
-            <?php if (!empty($errores)) { ?>
-                <div class="alert alert-danger mb-3">
-                    <?php foreach ($errores as $error) { ?>
-                        <div><?php echo e($error); ?></div>
-                    <?php } ?>
-                </div>
-            <?php } ?>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="app-auth-wrap">
+                    <div class="app-auth-cover app-auth-cover-register">
+                        <div class="app-auth-cover-mark">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h4>Registro inicial de acceso</h4>
+                    </div>
 
-            <?php if ($ok !== '') { ?>
-                <div class="alert alert-success mb-3"><?php echo e($ok); ?></div>
-            <?php } ?>
+                    <div class="app-auth-form p-4 p-md-5">
+                        <?php if (!empty($errores)) { ?>
+                            <div class="alert alert-danger py-2 mb-3">
+                                <?php foreach ($errores as $error) { ?>
+                                    <div><?php echo e($error); ?></div>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
 
-            <div class="alert alert-danger d-none mb-3" id="registroErrorCliente"></div>
+                        <?php if ($ok !== '') { ?>
+                            <div class="alert alert-success py-2 mb-3"><?php echo e($ok); ?></div>
+                        <?php } ?>
 
-            <form method="post" action="<?php echo e(app_url('registro.php')); ?>" autocomplete="off" id="formRegistroTemporal">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="dni" maxlength="8" inputmode="numeric" pattern="\d{8}" placeholder="DNI (8 dígitos)" value="<?php echo e($datos['dni']); ?>" required>
-                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-id-card"></span></div></div>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="nombres" placeholder="Nombres" value="<?php echo e($datos['nombres']); ?>" required>
-                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-user"></span></div></div>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="apellidos" placeholder="Apellidos" value="<?php echo e($datos['apellidos']); ?>" required>
-                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-user-tag"></span></div></div>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="usuario" placeholder="Usuario" value="<?php echo e($datos['usuario']); ?>" required>
-                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-at"></span></div></div>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="password" class="form-control" name="clave" id="registroClave" placeholder="Contraseña" required>
-                    <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary app-btn-eye" data-toggle-pass="#registroClave" aria-label="Mostrar u ocultar contraseña">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                        <div class="alert alert-danger d-none mb-3" id="registroErrorCliente"></div>
+
+                        <form method="post" action="<?php echo e(app_url('registro.php')); ?>" autocomplete="off" id="formRegistroTemporal">
+                            <div class="form-group mt-3">
+                                <label class="app-auth-label">DNI</label>
+                                <input type="text" class="form-control app-auth-control" name="dni" maxlength="8" inputmode="numeric" pattern="\d{8}" value="<?php echo e($datos['dni']); ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="app-auth-label">Nombres</label>
+                                <input type="text" class="form-control app-auth-control" name="nombres" value="<?php echo e($datos['nombres']); ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="app-auth-label">Apellidos</label>
+                                <input type="text" class="form-control app-auth-control" name="apellidos" value="<?php echo e($datos['apellidos']); ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="app-auth-label">Usuario</label>
+                                <input type="text" class="form-control app-auth-control" name="usuario" value="<?php echo e($datos['usuario']); ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="registroClave" class="app-auth-label">Contraseña</label>
+                                <div class="position-relative">
+                                    <input type="password" class="form-control app-auth-control pr-5" name="clave" id="registroClave" required>
+                                    <button type="button" class="btn btn-link app-auth-eye" data-toggle-pass="#registroClave" aria-label="Mostrar u ocultar contraseña">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="registroClaveRepetir" class="app-auth-label">Repetir contraseña</label>
+                                <div class="position-relative">
+                                    <input type="password" class="form-control app-auth-control pr-5" name="clave_repetir" id="registroClaveRepetir" required>
+                                    <button type="button" class="btn btn-link app-auth-eye" data-toggle-pass="#registroClaveRepetir" aria-label="Mostrar u ocultar contraseña">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-0">
+                                <button type="submit" class="form-control btn btn-primary rounded submit px-3 app-auth-btn">Crear usuario</button>
+                            </div>
+                        </form>
+
+                        <p class="text-center mt-3 mb-0 small">
+                            <a href="<?php echo e(app_url('login.php')); ?>" class="app-auth-link">Volver al login</a>
+                        </p>
                     </div>
                 </div>
-                <div class="input-group mb-3">
-                    <input type="password" class="form-control" name="clave_repetir" id="registroClaveRepetir" placeholder="Repetir contraseña" required>
-                    <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary app-btn-eye" data-toggle-pass="#registroClaveRepetir" aria-label="Mostrar u ocultar contraseña">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Crear usuario</button>
-            </form>
-
-            <p class="mt-3 mb-0 text-center">
-                <a href="<?php echo e(app_url('login.php')); ?>">Volver al login</a>
-            </p>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <script src="<?php echo e(asset_url('plugins/jquery/jquery.min.js')); ?>"></script>
 <script src="<?php echo e(asset_url('plugins/bootstrap/js/bootstrap.bundle.min.js')); ?>"></script>

@@ -336,12 +336,143 @@ body {
 }
 
 .app-auth-page {
-    background: linear-gradient(135deg, #eef2f7 0%, #dbe6f3 100%);
+    font-family: "Lato", "Segoe UI", Tahoma, Arial, sans-serif;
+    background: #f8f9fd;
+    color: #6c757d;
 }
 
-.app-btn-eye {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+.app-auth-section {
+    min-height: 100vh;
+    padding: 4.5rem 0 2.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.app-auth-heading {
+    color: #102a5a;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+
+.app-auth-subheading {
+    margin-bottom: 0;
+    color: #657182;
+}
+
+.app-auth-wrap {
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 10px 34px -15px rgba(0, 0, 0, 0.24);
+}
+
+.app-auth-cover {
+    min-height: 180px;
+    padding: 1.4rem;
+    background: linear-gradient(145deg, #0e2d63 0%, #16408d 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.app-auth-cover h4 {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.02rem;
+}
+
+.app-auth-cover-register {
+    background: linear-gradient(145deg, #1a4f8f 0%, #0e2d63 100%);
+}
+
+.app-auth-cover-mark {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.7rem;
+    font-size: 1.35rem;
+}
+
+.app-auth-form {
+    background: #fff;
+}
+
+.app-auth-form h4 {
+    color: #1f2d3d;
+    font-weight: 500;
+}
+
+.app-auth-label {
+    color: #4f5b67;
+    margin-bottom: 0.45rem;
+    font-weight: 600;
+}
+
+.app-auth-control {
+    height: 48px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+    color: #000;
+    font-size: 0.98rem;
+}
+
+.app-auth-control:focus,
+.app-auth-control:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #0e2d63;
+}
+
+.app-auth-eye {
+    position: absolute;
+    top: 50%;
+    right: 0.45rem;
+    transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.35);
+    text-decoration: none !important;
+    box-shadow: none !important;
+    padding: 0.2rem 0.25rem;
+}
+
+.app-auth-eye:hover,
+.app-auth-eye:focus {
+    color: #0e2d63;
+}
+
+.app-auth-btn.btn-primary {
+    background: #0e2d63 !important;
+    border: 1px solid #0e2d63 !important;
+    color: #fff !important;
+    font-size: 0.98rem;
+    font-weight: 600;
+}
+
+.app-auth-btn.btn-primary:hover,
+.app-auth-btn.btn-primary:focus {
+    background: #0b2450 !important;
+    border-color: #0b2450 !important;
+}
+
+.app-auth-link {
+    color: #0e2d63;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.app-auth-link:hover {
+    color: #0b2450;
+    text-decoration: underline;
 }
 
 @media (max-width: 767.98px) {

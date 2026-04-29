@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 define('APP_BOOTSTRAP', true);
 
 require_once __DIR__ . '/includes/config.php';
@@ -38,51 +38,69 @@ if (app_request_method() === 'POST') {
     <link rel="stylesheet" href="<?php echo e(asset_url('dist/css/adminlte.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset_url('assets/css/app.css')); ?>">
 </head>
-<body class="hold-transition login-page app-auth-page">
-<div class="login-box">
-    <div class="card card-outline card-primary">
-        <div class="card-header text-center">
-            <a href="<?php echo e(app_url('login.php')); ?>" class="h1"><b>Estudio Contable</b> Contreras</a>
+<body class="hold-transition app-auth-page">
+<section class="app-auth-section">
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8 text-center">
+                <h2 class="app-auth-heading">Bienvenido al Estudio Contable Contreras</h2>
+                <p class="app-auth-subheading">Ingresa con tu usuario o DNI para continuar.</p>
+            </div>
         </div>
-        <div class="card-body">
-            <p class="login-box-msg">Inicia sesión con tu usuario o DNI</p>
 
-            <?php if ($error !== '') { ?>
-                <div class="alert alert-danger"><?php echo e($error); ?></div>
-            <?php } ?>
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="app-auth-wrap">
+                    <div class="app-auth-cover">
+                        <div class="app-auth-cover-mark">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h4>Estudio Contable Contreras</h4>
+                    </div>
 
-            <form method="post" action="<?php echo e(app_url('login.php')); ?>" autocomplete="off">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="login" id="loginUsuario" placeholder="Usuario o DNI" value="<?php echo e($login); ?>" required>
-                    <div class="input-group-append">
-                        <div class="input-group-text"><span class="fas fa-user"></span></div>
+                    <div class="app-auth-form p-4 p-md-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <h4 class="mb-0">Iniciar sesión</h4>
+                        </div>
+
+                        <?php if ($error !== '') { ?>
+                            <div class="alert alert-danger py-2 mb-3"><?php echo e($error); ?></div>
+                        <?php } ?>
+
+                        <form method="post" action="<?php echo e(app_url('login.php')); ?>" autocomplete="off">
+                            <div class="form-group mt-3">
+                                <label for="loginUsuario" class="app-auth-label">Usuario o DNI</label>
+                                <input type="text" class="form-control app-auth-control" name="login" id="loginUsuario" value="<?php echo e($login); ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="loginClave" class="app-auth-label">Contraseña</label>
+                                <div class="position-relative">
+                                    <input type="password" class="form-control app-auth-control pr-5" name="clave" id="loginClave" required>
+                                    <button type="button" class="btn btn-link app-auth-eye" data-toggle-pass="#loginClave" aria-label="Mostrar u ocultar contraseña">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-0">
+                                <button type="submit" class="form-control btn btn-primary rounded submit px-3 app-auth-btn">
+                                    Ingresar
+                                </button>
+                            </div>
+                        </form>
+
+                        <?php if (auth_registro_publico_habilitado()) { ?>
+                            <p class="text-center mt-3 mb-0 small">
+                                <a href="<?php echo e(app_url('registro.php')); ?>" class="app-auth-link">Crear usuario temporal</a>
+                            </p>
+                        <?php } ?>
                     </div>
                 </div>
-
-                <div class="input-group mb-3">
-                    <input type="password" class="form-control" name="clave" id="loginClave" placeholder="Contraseña" required>
-                    <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary app-btn-eye" data-toggle-pass="#loginClave" aria-label="Mostrar u ocultar contraseña">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
-                    </div>
-                </div>
-            </form>
-
-            <?php if (auth_registro_publico_habilitado()) { ?>
-                <p class="mt-3 mb-0 text-center">
-                    <a href="<?php echo e(app_url('registro.php')); ?>">Crear usuario temporal</a>
-                </p>
-            <?php } ?>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <script src="<?php echo e(asset_url('plugins/jquery/jquery.min.js')); ?>"></script>
 <script src="<?php echo e(asset_url('plugins/bootstrap/js/bootstrap.bundle.min.js')); ?>"></script>
