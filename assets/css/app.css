@@ -1075,3 +1075,334 @@ body {
         width: 100%;
     }
 }
+
+.rb-items-lista {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.rb-item-pago {
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.45rem;
+    padding: 0.65rem;
+    background: #ffffff;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.rb-item-pago label {
+    display: flex;
+    gap: 0.55rem;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.rb-item-pago input[type="checkbox"] {
+    margin-top: 0.25rem;
+}
+
+.rb-item-pago span {
+    display: grid;
+}
+
+.rb-item-pago small {
+    color: #6c757d;
+}
+
+.rb-item-pagado {
+    opacity: 0.65;
+    background: #f8f9fa;
+}
+
+.rb-items-container {
+    min-height: 190px;
+}
+
+.rb-items-table td,
+.rb-items-table th {
+    vertical-align: middle;
+}
+
+.rb-total-box {
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.45rem;
+    background: #f8f9fa;
+    padding: 0.75rem;
+    max-width: 380px;
+    margin-left: auto;
+}
+
+.rb-total-box > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.45rem;
+}
+
+.rb-total-box > div:last-child {
+    margin-bottom: 0;
+}
+
+.rb-total-final {
+    border-top: 1px solid var(--ecc-border);
+    padding-top: 0.55rem;
+    font-size: 1.1rem;
+}
+
+.rb-documento-body {
+    background: #f4f6f9;
+}
+
+.rb-documento-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+
+.rb-documento-page {
+    padding: 0 1rem 1rem;
+}
+
+.rb-documento {
+    background: #ffffff;
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.45rem;
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
+}
+
+.rb-documento-vertical {
+    max-width: 820px;
+}
+
+.rb-documento-horizontal {
+    max-width: 1100px;
+}
+
+.rb-doc-header {
+    color: #ffffff;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.rb-doc-logo {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex: 0 0 auto;
+}
+
+.rb-logo-cuadrado {
+    width: 90px;
+    height: 90px;
+}
+
+.rb-logo-rectangular {
+    width: 150px;
+    height: 80px;
+}
+
+.rb-logo-banner {
+    width: 220px;
+    height: 65px;
+}
+
+.rb-doc-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.rb-doc-logo-empty {
+    display: grid;
+    text-align: center;
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+
+.rb-doc-logo-empty i {
+    font-size: 1.5rem;
+}
+
+.rb-doc-empresa {
+    flex: 1;
+}
+
+.rb-doc-empresa h3 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.rb-doc-empresa p {
+    margin: 0.15rem 0 0;
+    opacity: 0.95;
+}
+
+.rb-doc-codigo {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 0.45rem;
+    padding: 0.75rem;
+    text-align: right;
+    min-width: 160px;
+}
+
+.rb-doc-codigo span {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.rb-doc-codigo strong {
+    display: block;
+    font-size: 1.2rem;
+}
+
+.rb-doc-body {
+    padding: 1rem;
+}
+
+.rb-doc-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--ecc-border);
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.rb-doc-cliente {
+    background: #f8f9fa;
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.35rem;
+    padding: 0.75rem;
+    margin-bottom: 0.9rem;
+}
+
+.rb-doc-cliente h5,
+.rb-doc-cliente p {
+    margin-bottom: 0.2rem;
+}
+
+.rb-doc-bloque {
+    margin-bottom: 1rem;
+}
+
+.rb-doc-bloque h5 {
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+}
+
+.rb-doc-bloque table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.rb-doc-bloque th,
+.rb-doc-bloque td {
+    border: 1px solid var(--ecc-border);
+    padding: 0.5rem;
+}
+
+.rb-doc-bloque th {
+    background: #f8f9fa;
+}
+
+.rb-doc-totales {
+    display: grid;
+    gap: 0.35rem;
+    max-width: 320px;
+    margin-left: auto;
+    border-top: 2px solid var(--ecc-border);
+    padding-top: 0.75rem;
+}
+
+.rb-doc-totales > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.rb-doc-total-final {
+    font-size: 1.15rem;
+}
+
+.rb-doc-metodo-pago {
+    margin-top: 1rem;
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.35rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    display: grid;
+    gap: 0.25rem;
+}
+
+.rb-doc-metodo-pago h5 {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.rb-doc-metodo-pago span {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.rb-doc-footer {
+    margin-top: 1rem;
+    color: #6c757d;
+    background: #f8f9fa;
+    border-top: 1px solid var(--ecc-border);
+    padding: 0.75rem;
+    font-size: 0.85rem;
+}
+
+@media print {
+    .rb-documento-actions {
+        display: none;
+    }
+
+    .rb-documento-page {
+        padding: 0;
+    }
+
+    .rb-documento {
+        border: 0;
+        box-shadow: none;
+        border-radius: 0;
+        max-width: none;
+    }
+
+    body {
+        background: #ffffff;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .rb-doc-header,
+    .rb-doc-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rb-doc-codigo {
+        text-align: left;
+        width: 100%;
+    }
+
+    .rb-logo-banner,
+    .rb-logo-rectangular {
+        width: 100%;
+    }
+
+    .rb-total-box {
+        max-width: 100%;
+    }
+}

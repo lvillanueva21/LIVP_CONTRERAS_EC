@@ -511,7 +511,19 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - La proforma no registra ingreso.
    - Los botones Descargar JPG y Descargar PDF quedan preparados para la exportación local de Fase 10.
 
-
+   2026-04-28 - FASE 9
+   - Se implementa el módulo Recibos de pago.
+   - Se reutilizan las tablas ecc_recibos y ecc_recibo_detalles.
+   - No se crean tablas nuevas.
+   - No se agregan columnas nuevas.
+   - Se permite confirmar pago desde proforma.
+   - Se permite pago parcial.
+   - Se permite generar recibo manual de emergencia.
+   - El recibo sí registra ingreso.
+   - Los servicios completamente pagados pasan a Pagado.
+   - Los servicios no pagados o parcialmente pagados quedan como Pendiente.
+   - Se permite añadir servicio adicional al confirmar pago.
+   - Los botones Descargar JPG y Descargar PDF quedan preparados para la exportación local de Fase 10.
 
 
 */
@@ -719,6 +731,61 @@ ON DUPLICATE KEY UPDATE
 `total` = VALUES(`total`),
 `estado` = VALUES(`estado`),
 `orden` = VALUES(`orden`);
+
+INSERT INTO `ecc_recibos`
+(`id`, `codigo`, `proforma_id`, `cliente_id`, `plantilla_id`, `metodo_pago_id`, `fecha_emision`, `fecha_pago`, `total_proforma`, `total_pagado`, `saldo_pendiente`, `estado`, `observacion`, `created_by_external_id`)
+VALUES
+(1, 'R26-000596', 1, 1, 1, 1, '2026-04-28', '2026-04-28', 270.00, 150.00, 120.00, 'Emitido', 'Recibo demo por pago parcial de proforma P26-000008.', 'demo')
+ON DUPLICATE KEY UPDATE
+`proforma_id` = VALUES(`proforma_id`),
+`cliente_id` = VALUES(`cliente_id`),
+`plantilla_id` = VALUES(`plantilla_id`),
+`metodo_pago_id` = VALUES(`metodo_pago_id`),
+`fecha_emision` = VALUES(`fecha_emision`),
+`fecha_pago` = VALUES(`fecha_pago`),
+`total_proforma` = VALUES(`total_proforma`),
+`total_pagado` = VALUES(`total_pagado`),
+`saldo_pendiente` = VALUES(`saldo_pendiente`),
+`estado` = VALUES(`estado`),
+`observacion` = VALUES(`observacion`),
+`updated_by_external_id` = 'demo';
+
+INSERT INTO `ecc_recibo_detalles`
+(`id`, `recibo_id`, `proforma_detalle_id`, `cliente_servicio_id`, `bloque`, `descripcion`, `monto_original`, `monto_pagado`, `estado_servicio_resultante`, `orden`)
+VALUES
+(1, 1, 1, 1, 'Actuales', 'Declaración mensual abril 2026', 150.00, 150.00, 'Pagado', 1)
+ON DUPLICATE KEY UPDATE
+`recibo_id` = VALUES(`recibo_id`),
+`proforma_detalle_id` = VALUES(`proforma_detalle_id`),
+`cliente_servicio_id` = VALUES(`cliente_servicio_id`),
+`bloque` = VALUES(`bloque`),
+`descripcion` = VALUES(`descripcion`),
+`monto_original` = VALUES(`monto_original`),
+`monto_pagado` = VALUES(`monto_pagado`),
+`estado_servicio_resultante` = VALUES(`estado_servicio_resultante`),
+`orden` = VALUES(`orden`);
+
+UPDATE `ecc_proforma_detalles`
+SET `estado` = 'Pagado'
+WHERE `id` = 1;
+
+UPDATE `ecc_proforma_detalles`
+SET `estado` = 'Pendiente'
+WHERE `id` = 2;
+
+UPDATE `ecc_cliente_servicios`
+SET `estado` = 'Pagado'
+WHERE `id` = 1;
+
+UPDATE `ecc_cliente_servicios`
+SET `estado` = 'Pendiente'
+WHERE `id` = 2;
+
+UPDATE `ecc_proformas`
+SET
+    `estado` = 'Parcial',
+    `updated_by_external_id` = 'demo'
+WHERE `id` = 1;
 
 
 INSERT INTO `ecc_recibos`
