@@ -524,6 +524,21 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Los servicios no pagados o parcialmente pagados quedan como Pendiente.
    - Se permite añadir servicio adicional al confirmar pago.
    - Los botones Descargar JPG y Descargar PDF quedan preparados para la exportación local de Fase 10.
+
+   2026-04-29 - FASE 10
+   - Se estabiliza la exportación JPG/PDF local para Proformas y Recibos.
+   - Se usan librerías locales html2canvas y jsPDF.
+   - Se crea assets/js/exportador.js como exportador común.
+   - Se espera carga de logos e imágenes antes de capturar.
+   - Se evita captura vacía validando canvas y contenido generado.
+   - Se evita deformación de imágenes normalizando tamaño y object-fit.
+   - Se soporta PDF vertical y horizontal según el documento detectado.
+   - Se agrega CSS de impresión y exportación.
+   - Se limpia el DOM temporal después de cada exportación.
+   - Se registra en ecc_auditoria la descarga JPG/PDF de proformas y recibos.
+   - No se crean tablas nuevas.
+   - No se agregan columnas nuevas.
+*/
 */
 
 

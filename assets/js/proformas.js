@@ -420,13 +420,25 @@
             });
         },
 
-        exportar: function (id, tipo) {
-            AppAjax.get(this.ajaxUrl, {
-                action: 'exportar_proforma',
-                id: id,
-                tipo: tipo
-            });
-        }
+exportar: function (id, tipo) {
+    if (!window.AppExportador) {
+        AppUI.error('No se cargó el exportador local.');
+        return;
+    }
+
+    var nombre = 'proforma-' + id;
+
+    AppExportador.exportarDocumentoAjax({
+        ajaxUrl: this.ajaxUrl,
+        documentoAction: 'documento_proforma',
+        auditoriaAction: 'exportar_proforma',
+        id: id,
+        tipo: tipo,
+        nombreArchivo: AppExportador.nombreSeguro(nombre),
+        selectorDocumento: '#pfDocumentoExportable, .pf-documento',
+        orientacion: 'auto'
+    });
+}
     };
 
     window.Proformas = Proformas;

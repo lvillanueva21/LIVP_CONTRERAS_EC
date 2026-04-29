@@ -408,12 +408,35 @@ function pf_action_documento()
 
 function pf_action_exportar()
 {
+    app_require_post();
+
+    $id = (int)pf_request('id', 0);
     $tipo = pf_enum(pf_clean(pf_request('tipo')), array('jpg', 'pdf'), 'pdf');
+    $proforma = pf_obtener($id);
+
+    if (!$proforma) {
+        pf_json(array(
+            'ok' => false,
+            'message' => 'Proforma no encontrada.'
+        ), 404);
+    }
+
+    pf_auditoria(
+        'Descargar proforma ' . strtoupper($tipo),
+        'ecc_proformas',
+        $id,
+        'Se descargó la proforma ' . $proforma['codigo'] . ' en formato ' . strtoupper($tipo) . '.',
+        null,
+        array(
+            'codigo' => $proforma['codigo'],
+            'tipo' => $tipo
+        )
+    );
 
     pf_json(array(
-        'ok' => false,
-        'message' => 'La exportación ' . strtoupper($tipo) . ' local se implementará en Fase 10. El documento ya puede verse desde Ver documento.'
-    ), 501);
+        'ok' => true,
+        'message' => 'Descarga registrada.'
+    ));
 }
 
 try {

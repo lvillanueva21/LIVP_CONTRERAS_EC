@@ -423,12 +423,35 @@ function rb_action_documento()
 
 function rb_action_exportar()
 {
+    app_require_post();
+
+    $id = (int)rb_request('id', 0);
     $tipo = rb_enum(rb_clean(rb_request('tipo')), array('jpg', 'pdf'), 'pdf');
+    $recibo = rb_obtener($id);
+
+    if (!$recibo) {
+        rb_json(array(
+            'ok' => false,
+            'message' => 'Recibo no encontrado.'
+        ), 404);
+    }
+
+    rb_auditoria(
+        'Descargar recibo ' . strtoupper($tipo),
+        'ecc_recibos',
+        $id,
+        'Se descargó el recibo ' . $recibo['codigo'] . ' en formato ' . strtoupper($tipo) . '.',
+        null,
+        array(
+            'codigo' => $recibo['codigo'],
+            'tipo' => $tipo
+        )
+    );
 
     rb_json(array(
-        'ok' => false,
-        'message' => 'La exportación ' . strtoupper($tipo) . ' local se implementará en Fase 10. El documento ya puede verse desde Ver documento.'
-    ), 501);
+        'ok' => true,
+        'message' => 'Descarga registrada.'
+    ));
 }
 
 try {

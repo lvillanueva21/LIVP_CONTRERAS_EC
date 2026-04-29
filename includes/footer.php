@@ -26,6 +26,11 @@ $config = app_config();
 <script src="<?php echo e(asset_url('assets/js/ui.js')); ?>"></script>
 <script src="<?php echo e(asset_url('assets/js/ajax.js')); ?>"></script>
 <script src="<?php echo e(asset_url('assets/js/tablas.js')); ?>"></script>
+<?php if (isset($app_current_module) && in_array($app_current_module, array('proformas', 'recibos'), true)) { ?>
+<script src="<?php echo e(asset_url('plugins/html2canvas/html2canvas.min.js')); ?>"></script>
+<script src="<?php echo e(asset_url('plugins/jspdf/jspdf.umd.min.js')); ?>"></script>
+<script src="<?php echo e(asset_url('assets/js/exportador.js')); ?>"></script>
+<?php } ?>
 <?php if (isset($app_current_module) && $app_current_module === 'clientes_servicios') { ?>
 <script src="<?php echo e(asset_url('assets/js/clientes_servicios.js')); ?>"></script>
 <?php } ?>

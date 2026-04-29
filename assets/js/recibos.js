@@ -466,13 +466,25 @@
             });
         },
 
-        exportar: function (id, tipo) {
-            AppAjax.get(this.ajaxUrl, {
-                action: 'exportar_recibo',
-                id: id,
-                tipo: tipo
-            });
-        }
+exportar: function (id, tipo) {
+    if (!window.AppExportador) {
+        AppUI.error('No se cargó el exportador local.');
+        return;
+    }
+
+    var nombre = 'recibo-' + id;
+
+    AppExportador.exportarDocumentoAjax({
+        ajaxUrl: this.ajaxUrl,
+        documentoAction: 'documento_recibo',
+        auditoriaAction: 'exportar_recibo',
+        id: id,
+        tipo: tipo,
+        nombreArchivo: AppExportador.nombreSeguro(nombre),
+        selectorDocumento: '#rbDocumentoExportable, .rb-documento',
+        orientacion: 'auto'
+    });
+}
     };
 
     window.Recibos = Recibos;

@@ -1406,3 +1406,84 @@ body {
         max-width: 100%;
     }
 }
+
+.app-export-wrapper {
+    position: fixed;
+    left: -100000px;
+    top: 0;
+    width: auto;
+    min-width: 900px;
+    background: #ffffff;
+    z-index: -1;
+    opacity: 1;
+    pointer-events: none;
+}
+
+.app-export-wrapper .modal,
+.app-export-wrapper .modal-dialog,
+.app-export-wrapper .modal-content,
+.app-export-wrapper .modal-body {
+    display: block;
+    position: static;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+}
+
+.app-export-documento {
+    background: #ffffff;
+    color: #212529;
+    transform: none;
+    opacity: 1;
+}
+
+.app-export-documento img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.app-export-documento .pf-doc-header,
+.app-export-documento .rb-doc-header {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+@media print {
+    .main-header,
+    .main-sidebar,
+    .main-footer,
+    .control-sidebar,
+    .content-header,
+    .app-action-buttons,
+    .btn,
+    .modal-header,
+    .modal-footer,
+    .pf-documento-actions,
+    .rb-documento-actions {
+        display: none !important;
+    }
+
+    body {
+        background: #ffffff !important;
+    }
+
+    .content-wrapper {
+        margin-left: 0 !important;
+        background: #ffffff !important;
+    }
+
+    .pf-documento,
+    .rb-documento,
+    #pfDocumentoExportable,
+    #rbDocumentoExportable {
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        max-width: none !important;
+    }
+}
