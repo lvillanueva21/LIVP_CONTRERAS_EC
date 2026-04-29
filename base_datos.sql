@@ -550,6 +550,12 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se amplía ecc_cliente_servicios.modo_aviso para Fecha exacta, Faltando X días, Faltando X horas y Faltando X minutos.
    - Se agrega ecc_cliente_servicios.aviso_valor.
    - Se registran datos de prueba para ver dashboard funcionando.
+
+   2026-04-29 - FASE 11.5.2
+   - Se retira la clasificación por bloque del alta de servicio asignado al cliente.
+   - El bloque del documento se decide en proformas o recibos, no al cargar servicio al cliente.
+   - ecc_cliente_servicios.bloque_documento se mantiene como compatibilidad técnica con valor por defecto Actuales.
+   - Se corrige la consulta de servicios disponibles en proformas para evitar mezclar servicios de otros clientes.
 */
 
 

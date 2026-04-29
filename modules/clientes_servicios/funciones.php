@@ -370,7 +370,7 @@ function cs_render_cliente_detalle($cliente_id)
                 <div class="card-header d-flex align-items-center">
                     <h3 class="card-title mb-0">
                         <i class="fas fa-tasks mr-1"></i>
-                        Servicios asignados
+                        Servicios cargados
                     </h3>
                     <button type="button" class="btn btn-sm btn-primary ml-auto btnNuevoServicioCliente" data-cliente-id="<?php echo e($cliente['id']); ?>">
                         <i class="fas fa-plus mr-1"></i>
@@ -378,7 +378,7 @@ function cs_render_cliente_detalle($cliente_id)
                     </button>
                 </div>
                 <div class="card-body">
-                    <table class="table table-sm table-bordered" data-app-table="true" data-page-length="10" data-empty-text="Este cliente no tiene servicios asignados.">
+                    <table class="table table-sm table-bordered" data-app-table="true" data-page-length="10" data-empty-text="Este cliente no tiene servicios cargados.">
                         <thead>
                             <tr>
                                 <th>Servicio</th>
@@ -490,3 +490,4 @@ function cs_auditoria($accion, $tabla, $registro_id, $descripcion, $datos_anteri
         ':created_by_external_id' => cs_external_id()
     ));
 }
+

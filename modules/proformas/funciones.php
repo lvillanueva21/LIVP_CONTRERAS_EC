@@ -189,19 +189,25 @@ function pf_listar_servicios_cliente($cliente_id, $proforma_id = 0)
         LEFT JOIN ecc_servicio_etiquetas se ON se.servicio_id = s.id
         LEFT JOIN ecc_etiquetas e ON e.id = se.etiqueta_id AND e.estado = 1
         WHERE cs.cliente_id = :cliente_id
-          AND cs.estado = 'Pendiente'
     ";
 
     if ((int)$proforma_id > 0) {
         $sql .= "
-            OR cs.id IN (
-                SELECT cliente_servicio_id
-                FROM ecc_proforma_detalles
-                WHERE proforma_id = :proforma_id
-                  AND cliente_servicio_id IS NOT NULL
-            )
+          AND (
+                cs.estado = 'Pendiente'
+                OR cs.id IN (
+                    SELECT cliente_servicio_id
+                    FROM ecc_proforma_detalles
+                    WHERE proforma_id = :proforma_id
+                      AND cliente_servicio_id IS NOT NULL
+                )
+          )
         ";
         $params[':proforma_id'] = (int)$proforma_id;
+    } else {
+        $sql .= "
+          AND cs.estado = 'Pendiente'
+        ";
     }
 
     $sql .= "
@@ -387,7 +393,7 @@ function pf_render_servicios_cliente($cliente_id, $proforma_id = 0)
     }
 
     if (empty($servicios)) {
-        return '<div class="app-empty-state"><div class="app-empty-state-icon"><i class="fas fa-inbox"></i></div><h5>Sin servicios pendientes</h5><p>Este cliente no tiene servicios pendientes para proformar.</p></div>';
+        return '<div class="app-empty-state"><div class="app-empty-state-icon"><i class="fas fa-inbox"></i></div><h5>Sin servicios pendientes para proformar</h5><p>Este cliente no tiene servicios pendientes para proformar.</p></div>';
     }
 
     ob_start();
@@ -397,7 +403,7 @@ function pf_render_servicios_cliente($cliente_id, $proforma_id = 0)
             <?php
             $servicio_id = (int)$servicio['id'];
             $marcado = isset($seleccionados[$servicio_id]);
-            $bloque = $marcado ? $seleccionados[$servicio_id]['bloque'] : $servicio['bloque_documento'];
+            $bloque = $marcado ? $seleccionados[$servicio_id]['bloque'] : 'Actuales';
             $descripcion = $marcado ? $seleccionados[$servicio_id]['descripcion'] : (trim((string)$servicio['descripcion_personalizada']) !== '' ? $servicio['descripcion_personalizada'] : $servicio['servicio_nombre']);
             $monto = $marcado ? $seleccionados[$servicio_id]['precio_unitario'] : $servicio['monto'];
             ?>

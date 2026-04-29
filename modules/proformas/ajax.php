@@ -49,7 +49,7 @@ function pf_action_servicios_cliente()
     if ($cliente_id <= 0) {
         pf_json(array(
             'ok' => true,
-            'html' => '<div class="app-empty-state"><div class="app-empty-state-icon"><i class="fas fa-user"></i></div><h5>Seleccione un cliente</h5><p>Los servicios pendientes aparecerán aquí.</p></div>'
+            'html' => '<div class="app-empty-state"><div class="app-empty-state-icon"><i class="fas fa-user"></i></div><h5>Seleccione un cliente</h5><p>Los servicios pendientes para proformar aparecerán aquí.</p></div>'
         ));
     }
 

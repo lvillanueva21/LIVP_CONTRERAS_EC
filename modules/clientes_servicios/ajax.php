@@ -342,7 +342,7 @@ function cs_action_guardar_servicio_cliente()
     $descripcion = cs_clean_string(cs_request('descripcion_personalizada'));
     $periodo = cs_clean_string(cs_request('periodo'));
     $monto = cs_clean_money(cs_request('monto', 0));
-    $bloque_documento = cs_validate_enum(cs_clean_string(cs_request('bloque_documento')), array('Actuales', 'Pendientes de pago', 'Otros servicios o trámites'), 'Actuales');
+    $bloque_documento = 'Actuales';
     $estado = cs_validate_enum(cs_clean_string(cs_request('estado')), array('Pendiente', 'En proforma', 'Pagado', 'Anulado'), 'Pendiente');
     $fecha_vencimiento = cs_clean_string(cs_request('fecha_vencimiento'));
     $fecha_aviso = cs_clean_datetime_or_null(cs_request('fecha_aviso'));
@@ -666,3 +666,4 @@ try {
         'message' => app_debug() ? $e->getMessage() : 'Error interno del módulo.'
     ), 500);
 }
+

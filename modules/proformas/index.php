@@ -99,7 +99,7 @@ $plantillas_options = pf_render_plantillas_options();
                             <div class="card-header">
                                 <h3 class="card-title">
                                     <i class="fas fa-tasks mr-1"></i>
-                                    Servicios pendientes del cliente
+                                    Servicios pendientes para proformar
                                 </h3>
                             </div>
                             <div class="card-body" id="proformaServiciosClienteContainer">
@@ -108,7 +108,7 @@ $plantillas_options = pf_render_plantillas_options();
                                         <i class="fas fa-user"></i>
                                     </div>
                                     <h5>Seleccione un cliente</h5>
-                                    <p>Los servicios pendientes aparecerán aquí.</p>
+                                    <p>Los servicios pendientes para proformar aparecerán aquí.</p>
                                 </div>
                             </div>
                         </div>

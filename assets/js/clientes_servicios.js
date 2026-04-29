@@ -332,7 +332,6 @@
             $('#servicioId').val('');
             $('#servicioEtiquetas').val([]);
             $('#servicioMonto').val('');
-            $('#servicioBloque').val('Actuales');
             $('#servicioFechaVencimiento').val('');
             $('#servicioFechaAviso').val('');
             $('#servicioModoAviso').val('Sin aviso');
@@ -363,7 +362,6 @@
                     $('#servicioDescripcion').val(s.descripcion_personalizada);
                     $('#servicioPeriodo').val(s.periodo);
                     $('#servicioMonto').val(s.monto);
-                    $('#servicioBloque').val(s.bloque_documento);
                     $('#servicioFechaVencimiento').val(s.fecha_vencimiento);
                     $('#servicioFechaAviso').val(ClientesServicios.fechaAvisoParaInput(s.fecha_aviso));
                     $('#servicioModoAviso').val(s.modo_aviso);

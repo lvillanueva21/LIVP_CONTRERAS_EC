@@ -218,18 +218,9 @@ $etiquetas_options = cs_render_etiquetas_options();
                         <input type="text" name="periodo" id="servicioPeriodo" class="form-control" maxlength="60" data-char-counter="true" placeholder="Ejemplo: Abril 2026">
                     </div>
 
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-8">
                         <label>Monto soles <span class="app-required">*</span></label>
                         <input type="number" name="monto" id="servicioMonto" class="form-control" min="0.01" step="0.01" required>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label>Bloque</label>
-                        <select name="bloque_documento" id="servicioBloque" class="custom-select">
-                            <option value="Actuales">Actuales</option>
-                            <option value="Pendientes de pago">Pendientes de pago</option>
-                            <option value="Otros servicios o trámites">Otros servicios o trámites</option>
-                        </select>
                     </div>
                 </div>
 
@@ -355,3 +346,4 @@ $etiquetas_options = cs_render_etiquetas_options();
         </div>
     </div>
 </div>
+

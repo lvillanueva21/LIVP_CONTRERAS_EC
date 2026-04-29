@@ -103,7 +103,7 @@
             $('#proformaFechaVencimiento').val('');
             $('#proformaDescuento').val('0.00');
             $('#proformaServiciosClienteContainer').html(
-                '<div class="app-empty-state"><div class="app-empty-state-icon"><i class="fas fa-user"></i></div><h5>Seleccione un cliente</h5><p>Los servicios pendientes aparecerán aquí.</p></div>'
+                '<div class="app-empty-state"><div class="app-empty-state-icon"><i class="fas fa-user"></i></div><h5>Seleccione un cliente</h5><p>Los servicios pendientes para proformar aparecerán aquí.</p></div>'
             );
             this.items = [];
             this.renderItems();
