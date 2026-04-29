@@ -124,6 +124,37 @@
             return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
         },
 
+        timestampArchivo: function () {
+            var d = new Date();
+
+            return d.getFullYear() +
+                String(d.getMonth() + 1).padStart(2, '0') +
+                String(d.getDate()).padStart(2, '0') + '-' +
+                String(d.getHours()).padStart(2, '0') +
+                String(d.getMinutes()).padStart(2, '0') +
+                String(d.getSeconds()).padStart(2, '0');
+        },
+
+        clienteExportacionDesdeDocumento: function (documento, id) {
+            if (documento && documento.querySelector) {
+                var nodo = documento.querySelector('.rb-doc-cliente strong');
+
+                if (nodo) {
+                    var texto = $.trim(nodo.textContent || nodo.innerText || '');
+
+                    if (texto !== '') {
+                        return texto;
+                    }
+                }
+            }
+
+            return 'cliente-' + id;
+        },
+
+        nombreArchivoExportacion: function (documento, id) {
+            return 'recibo-' + this.clienteExportacionDesdeDocumento(documento, id) + '-' + this.timestampArchivo();
+        },
+
         limpiarFormulario: function () {
             $('#formRecibo')[0].reset();
             $('#reciboFechaEmision').val(this.fechaHoy());
@@ -498,7 +529,7 @@ exportar: function (id, tipo) {
         return;
     }
 
-    var nombre = 'recibo-' + id;
+    var self = this;
 
     AppExportador.exportarDocumentoAjax({
         ajaxUrl: this.ajaxUrl,
@@ -506,7 +537,10 @@ exportar: function (id, tipo) {
         auditoriaAction: 'exportar_recibo',
         id: id,
         tipo: tipo,
-        nombreArchivo: AppExportador.nombreSeguro(nombre),
+        nombreArchivo: 'recibo-' + id,
+        generarNombreArchivo: function (documento) {
+            return self.nombreArchivoExportacion(documento, id);
+        },
         selectorDocumento: '#rbDocumentoExportable, .rb-documento',
         orientacion: 'auto'
     });

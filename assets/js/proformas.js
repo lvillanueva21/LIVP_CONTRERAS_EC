@@ -122,6 +122,37 @@
             return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
         },
 
+        timestampArchivo: function () {
+            var d = new Date();
+
+            return d.getFullYear() +
+                String(d.getMonth() + 1).padStart(2, '0') +
+                String(d.getDate()).padStart(2, '0') + '-' +
+                String(d.getHours()).padStart(2, '0') +
+                String(d.getMinutes()).padStart(2, '0') +
+                String(d.getSeconds()).padStart(2, '0');
+        },
+
+        clienteExportacionDesdeDocumento: function (documento, id) {
+            if (documento && documento.querySelector) {
+                var nodo = documento.querySelector('.pf-doc-cliente strong');
+
+                if (nodo) {
+                    var texto = $.trim(nodo.textContent || nodo.innerText || '');
+
+                    if (texto !== '') {
+                        return texto;
+                    }
+                }
+            }
+
+            return 'cliente-' + id;
+        },
+
+        nombreArchivoExportacion: function (documento, id) {
+            return 'proforma-' + this.clienteExportacionDesdeDocumento(documento, id) + '-' + this.timestampArchivo();
+        },
+
         cargarServiciosCliente: function () {
             var clienteId = $('#proformaClienteId').val();
             var proformaId = $('#proformaId').val();
@@ -438,7 +469,7 @@ exportar: function (id, tipo) {
         return;
     }
 
-    var nombre = 'proforma-' + id;
+    var self = this;
 
     AppExportador.exportarDocumentoAjax({
         ajaxUrl: this.ajaxUrl,
@@ -446,7 +477,10 @@ exportar: function (id, tipo) {
         auditoriaAction: 'exportar_proforma',
         id: id,
         tipo: tipo,
-        nombreArchivo: AppExportador.nombreSeguro(nombre),
+        nombreArchivo: 'proforma-' + id,
+        generarNombreArchivo: function (documento) {
+            return self.nombreArchivoExportacion(documento, id);
+        },
         selectorDocumento: '#pfDocumentoExportable, .pf-documento',
         orientacion: 'auto'
     });

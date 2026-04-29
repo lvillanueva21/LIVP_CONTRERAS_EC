@@ -13,6 +13,7 @@
                 id: 0,
                 tipo: 'pdf',
                 nombreArchivo: 'documento',
+                generarNombreArchivo: null,
                 selectorDocumento: '',
                 orientacion: 'auto'
             }, config || {});
@@ -53,15 +54,29 @@
                             });
                         })
                         .then(function (payload) {
+                            payload.nombreArchivo = AppExportador.nombreSeguro(opciones.nombreArchivo || 'documento');
+
+                            if (typeof opciones.generarNombreArchivo === 'function') {
+                                try {
+                                    var nombreDinamico = opciones.generarNombreArchivo(payload.documento, opciones);
+
+                                    if (String(nombreDinamico || '').trim() !== '') {
+                                        payload.nombreArchivo = AppExportador.nombreSeguro(nombreDinamico);
+                                    }
+                                } catch (e) {
+                                    payload.nombreArchivo = AppExportador.nombreSeguro(opciones.nombreArchivo || 'documento');
+                                }
+                            }
+
                             if (tipo === 'jpg') {
-                                return AppExportador.exportarJpg(payload.documento, opciones.nombreArchivo).then(function () {
+                                return AppExportador.exportarJpg(payload.documento, payload.nombreArchivo).then(function () {
                                     return payload;
                                 });
                             }
 
                             return AppExportador.exportarPdf(
                                 payload.documento,
-                                opciones.nombreArchivo,
+                                payload.nombreArchivo,
                                 payload.orientacionDetectada
                             ).then(function () {
                                 return payload;
