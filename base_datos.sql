@@ -43,7 +43,7 @@
 CREATE TABLE IF NOT EXISTS `ecc_clientes` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `tipo_cliente` ENUM('Empresa','Persona natural') NOT NULL DEFAULT 'Empresa',
-    `documento_tipo` ENUM('RUC','DNI','CE','PASAPORTE') NOT NULL DEFAULT 'RUC',
+    `documento_tipo` ENUM('RUC','DNI') NOT NULL DEFAULT 'RUC',
     `numero_documento` VARCHAR(20) NOT NULL,
     `razon_social` VARCHAR(180) NULL,
     `nombre_comercial` VARCHAR(180) NULL,
@@ -611,6 +611,15 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se corrige el comportamiento de NOW(), CURDATE() y CURRENT_TIMESTAMP para operar con hora de Perú.
    - No se crean tablas nuevas.
    - No se agregan columnas nuevas.
+
+      2026-04-29 - AJUSTE CLIENTES PERSONA NATURAL CON RUC
+   - Se permite registrar Persona natural con RUC o DNI.
+   - Para Persona natural, RUC queda como documento por defecto y DNI como opción secundaria.
+   - Empresa sigue usando obligatoriamente RUC y razón social.
+   - Persona natural requiere nombres y apellidos.
+   - Persona natural con RUC puede conservar razón social o nombre registrado en SUNAT como dato opcional.
+   - Se facilita pasar clientes registrados como Empresa a Persona natural sin perder el RUC.
+   - Se reduce ecc_clientes.documento_tipo a RUC y DNI si no existen datos históricos con CE/PASAPORTE.
 */
 
 

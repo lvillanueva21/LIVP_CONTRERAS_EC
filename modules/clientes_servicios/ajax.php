@@ -126,41 +126,46 @@ function cs_action_guardar_cliente()
         ), 422);
     }
 
-    if ($tipo_cliente === 'Empresa') {
-        $documento_tipo = 'RUC';
+if ($tipo_cliente === 'Empresa') {
+    $documento_tipo = 'RUC';
 
-        if ($razon_social === '') {
-            cs_json(array(
-                'ok' => false,
-                'message' => 'Ingrese la razón social.'
-            ), 422);
-        }
-
-        if (!preg_match('/^\\d{11}$/', $numero_documento)) {
-            cs_json(array(
-                'ok' => false,
-                'message' => 'El RUC debe tener 11 dígitos numéricos.'
-            ), 422);
-        }
+    if ($razon_social === '') {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Ingrese la razón social.'
+        ), 422);
     }
 
-    if ($tipo_cliente === 'Persona natural') {
-        $documento_tipo = 'DNI';
-
-        if ($nombres === '' || $apellidos === '') {
-            cs_json(array(
-                'ok' => false,
-                'message' => 'Ingrese nombres y apellidos.'
-            ), 422);
-        }
-
-        if (!preg_match('/^\\d{8}$/', $numero_documento)) {
-            cs_json(array(
-                'ok' => false,
-                'message' => 'El DNI debe tener 8 dígitos numéricos.'
-            ), 422);
-        }
+    if (!preg_match('/^\\d{11}$/', $numero_documento)) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'El RUC debe tener 11 dígitos numéricos.'
+        ), 422);
     }
+}
+
+if ($tipo_cliente === 'Persona natural') {
+    if ($nombres === '' || $apellidos === '') {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Ingrese nombres y apellidos.'
+        ), 422);
+    }
+
+    if ($documento_tipo === 'RUC' && !preg_match('/^\\d{11}$/', $numero_documento)) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'El RUC debe tener 11 dígitos numéricos.'
+        ), 422);
+    }
+
+    if ($documento_tipo === 'DNI' && !preg_match('/^\\d{8}$/', $numero_documento)) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'El DNI debe tener 8 dígitos numéricos.'
+        ), 422);
+    }
+}
 
     if ($correo !== '' && !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
         cs_json(array(

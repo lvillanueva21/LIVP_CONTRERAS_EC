@@ -170,16 +170,22 @@ $catalogo_servicios_html = cs_render_catalogo_servicios_table();
                         </select>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label>Número documento <span class="app-required">*</span></label>
-                        <input type="text" name="numero_documento" id="clienteNumeroDocumento" class="form-control" maxlength="20" data-char-counter="true" required>
-                    </div>
-                </div>
+<div class="form-group col-md-4">
+    <label>Número documento <span class="app-required">*</span></label>
+    <input type="text" name="numero_documento" id="clienteNumeroDocumento" class="form-control" maxlength="20" data-char-counter="true" required>
+    <small class="app-form-help" id="clienteDocumentoAyuda">Ingrese RUC de 11 dígitos.</small>
+</div>
 
-                <div class="form-group cliente-campo-empresa">
-                    <label>Razón social <span class="app-required">*</span></label>
-                    <input type="text" name="razon_social" id="clienteRazonSocial" class="form-control" maxlength="180" data-char-counter="true">
-                </div>
+<div class="form-group cliente-campo-razon-social">
+    <label>
+        <span id="clienteRazonSocialLabel">Razón social</span>
+        <span class="app-required" id="clienteRazonSocialRequerida">*</span>
+    </label>
+    <input type="text" name="razon_social" id="clienteRazonSocial" class="form-control" maxlength="180" data-char-counter="true">
+    <small class="app-form-help" id="clienteRazonSocialAyuda">
+        Obligatoria para empresa. Opcional para persona natural con RUC.
+    </small>
+</div>
 
                 <div class="form-group cliente-campo-empresa">
                     <label>Nombre comercial</label>
