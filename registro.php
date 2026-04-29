@@ -17,15 +17,13 @@ $ok = '';
 $datos = array(
     'dni' => '',
     'nombres' => '',
-    'apellidos' => '',
-    'usuario' => ''
+    'apellidos' => ''
 );
 
 if (app_request_method() === 'POST') {
     $datos['dni'] = trim((string)($_POST['dni'] ?? ''));
     $datos['nombres'] = trim((string)($_POST['nombres'] ?? ''));
     $datos['apellidos'] = trim((string)($_POST['apellidos'] ?? ''));
-    $datos['usuario'] = trim((string)($_POST['usuario'] ?? ''));
     $clave = (string)($_POST['clave'] ?? '');
     $clave2 = (string)($_POST['clave_repetir'] ?? '');
 
@@ -41,10 +39,6 @@ if (app_request_method() === 'POST') {
         $errores[] = 'Ingresa los apellidos.';
     }
 
-    if ($datos['usuario'] === '') {
-        $errores[] = 'Ingresa el usuario.';
-    }
-
     if (strlen($clave) < 8) {
         $errores[] = 'La contraseña debe tener al menos 8 caracteres.';
     }
@@ -56,29 +50,29 @@ if (app_request_method() === 'POST') {
     if (empty($errores)) {
         $pdo = app_pdo();
 
-        $stmt = $pdo->prepare("SELECT id FROM ecc_usuarios WHERE usuario = :usuario OR dni = :dni LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id FROM ecc_usuarios WHERE dni = :dni LIMIT 1");
         $stmt->execute(array(
-            ':usuario' => $datos['usuario'],
             ':dni' => $datos['dni']
         ));
 
         if ($stmt->fetch()) {
-            $errores[] = 'Ya existe un usuario con ese DNI o nombre de usuario.';
+            $errores[] = 'Ya existe un usuario con ese DNI.';
         } else {
             $hash = password_hash($clave, PASSWORD_DEFAULT);
+            $usuario_login = $datos['dni'];
 
             $ins = $pdo->prepare("\n                INSERT INTO ecc_usuarios\n                (dni, nombres, apellidos, usuario, clave_hash, rol, estado, created_by_external_id)\n                VALUES\n                (:dni, :nombres, :apellidos, :usuario, :clave_hash, 'Administrador', 1, :created_by_external_id)\n            ");
             $ins->execute(array(
                 ':dni' => $datos['dni'],
                 ':nombres' => $datos['nombres'],
                 ':apellidos' => $datos['apellidos'],
-                ':usuario' => $datos['usuario'],
+                ':usuario' => $usuario_login,
                 ':clave_hash' => $hash,
-                ':created_by_external_id' => $datos['usuario']
+                ':created_by_external_id' => $usuario_login
             ));
 
             $ok = 'Usuario creado correctamente. Ya puedes iniciar sesión.';
-            $datos = array('dni' => '', 'nombres' => '', 'apellidos' => '', 'usuario' => '');
+            $datos = array('dni' => '', 'nombres' => '', 'apellidos' => '');
         }
     }
 }
@@ -142,11 +136,6 @@ if (app_request_method() === 'POST') {
                             <div class="form-group">
                                 <label class="app-auth-label">Apellidos</label>
                                 <input type="text" class="form-control app-auth-control" name="apellidos" value="<?php echo e($datos['apellidos']); ?>" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="app-auth-label">Usuario</label>
-                                <input type="text" class="form-control app-auth-control" name="usuario" value="<?php echo e($datos['usuario']); ?>" required>
                             </div>
 
                             <div class="form-group">

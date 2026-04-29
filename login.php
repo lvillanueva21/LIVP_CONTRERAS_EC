@@ -44,7 +44,7 @@ if (app_request_method() === 'POST') {
         <div class="row justify-content-center mb-4">
             <div class="col-md-8 text-center">
                 <h2 class="app-auth-heading">Bienvenido al Estudio Contable Contreras</h2>
-                <p class="app-auth-subheading">Ingresa con tu usuario o DNI para continuar.</p>
+                <p class="app-auth-subheading">Ingresa con tu DNI para continuar.</p>
             </div>
         </div>
 
@@ -69,8 +69,8 @@ if (app_request_method() === 'POST') {
 
                         <form method="post" action="<?php echo e(app_url('login.php')); ?>" autocomplete="off">
                             <div class="form-group mt-3">
-                                <label for="loginUsuario" class="app-auth-label">Usuario o DNI</label>
-                                <input type="text" class="form-control app-auth-control" name="login" id="loginUsuario" value="<?php echo e($login); ?>" required>
+                                <label for="loginUsuario" class="app-auth-label">DNI</label>
+                                <input type="text" class="form-control app-auth-control" name="login" id="loginUsuario" value="<?php echo e($login); ?>" maxlength="8" inputmode="numeric" pattern="\d{8}" required>
                             </div>
 
                             <div class="form-group">

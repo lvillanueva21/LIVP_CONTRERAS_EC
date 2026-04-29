@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!defined('APP_BOOTSTRAP')) {
     http_response_code(403);
     exit('Acceso no permitido');
@@ -65,7 +65,7 @@ function auth_current_user_from_session()
     $display_name = trim($nombres . ' ' . $apellidos);
 
     if ($display_name === '') {
-        $display_name = (string)($user['usuario'] ?? $user['dni'] ?? 'Usuario');
+        $display_name = (string)($user['dni'] ?? 'Usuario');
     }
 
     return array(
@@ -78,7 +78,7 @@ function auth_current_user_from_session()
         'estado' => (int)($user['estado'] ?? 1),
         'name' => $display_name,
         'role' => (string)($user['rol'] ?? 'Administrador'),
-        'mode' => (string)($user['usuario'] ?? $user['dni'] ?? 'sistema')
+        'mode' => (string)($user['dni'] ?? 'sistema')
     );
 }
 
@@ -150,19 +150,19 @@ function auth_logout()
     session_destroy();
 }
 
-function auth_login_attempt($usuario_o_dni, $clave)
+function auth_login_attempt($dni, $clave)
 {
-    $usuario_o_dni = trim((string)$usuario_o_dni);
+    $dni = trim((string)$dni);
     $clave = (string)$clave;
 
-    if ($usuario_o_dni === '' || $clave === '') {
-        return array('ok' => false, 'message' => 'Ingresa usuario o DNI y contraseña.');
+    if (!preg_match('/^\d{8}$/', $dni) || $clave === '') {
+        return array('ok' => false, 'message' => 'Ingresa DNI y contraseña válidos.');
     }
 
     $pdo = app_pdo();
 
-    $stmt = $pdo->prepare("\n        SELECT *\n        FROM ecc_usuarios\n        WHERE estado = 1\n          AND (usuario = :login OR dni = :login)\n        LIMIT 1\n    ");
-    $stmt->execute(array(':login' => $usuario_o_dni));
+    $stmt = $pdo->prepare("\n        SELECT *\n        FROM ecc_usuarios\n        WHERE estado = 1\n          AND dni = :dni\n        LIMIT 1\n    ");
+    $stmt->execute(array(':dni' => $dni));
     $usuario = $stmt->fetch();
 
     if (!$usuario || !password_verify($clave, (string)$usuario['clave_hash'])) {
@@ -171,7 +171,7 @@ function auth_login_attempt($usuario_o_dni, $clave)
 
     auth_set_session_user($usuario);
 
-    $updated_by = (string)$usuario['usuario'];
+    $updated_by = (string)$usuario['dni'];
     $upd = $pdo->prepare("\n        UPDATE ecc_usuarios\n        SET ultimo_login_at = NOW(), updated_by_external_id = :updated_by_external_id\n        WHERE id = :id\n    ");
     $upd->execute(array(
         ':updated_by_external_id' => $updated_by,
