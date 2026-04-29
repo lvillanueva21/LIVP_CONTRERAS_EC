@@ -175,7 +175,7 @@ $catalogo_servicios_html = cs_render_catalogo_servicios_table();
     <input type="text" name="numero_documento" id="clienteNumeroDocumento" class="form-control" maxlength="20" data-char-counter="true" required>
     <small class="app-form-help" id="clienteDocumentoAyuda">Ingrese RUC de 11 dígitos.</small>
 </div>
-
+</div>
 <div class="form-group cliente-campo-razon-social">
     <label>
         <span id="clienteRazonSocialLabel">Razón social</span>
