@@ -15,10 +15,12 @@ $app_config = array(
     'app_environment' => 'development',
     'app_debug' => true,
 
-    'app_session_name' => 'ecc_session',
-    'app_registro_publico' => true,
+'app_session_name' => 'ecc_session',
+'app_registro_publico' => true,
+'app_timezone' => 'America/Lima',
+'database_timezone' => '-05:00',
 
-    'default_module' => 'inicio',
+'default_module' => 'inicio',
 
     'database' => array(
         'host' => 'localhost',
