@@ -539,7 +539,6 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - No se crean tablas nuevas.
    - No se agregan columnas nuevas.
 */
-*/
 
 
 
