@@ -770,8 +770,17 @@ function rb_render_documento($recibo_id)
             <?php if ((int)$plantilla['datos_cliente_visible'] === 1 && $cliente) { ?>
                 <div class="rb-doc-cliente">
                     <h5>Cliente</h5>
-                    <p><strong><?php echo e(rb_cliente_nombre($cliente)); ?></strong></p>
-                    <p><?php echo e($cliente['documento_tipo']); ?> <?php echo e($cliente['numero_documento']); ?></p>
+                    <?php $cliente_contacto = trim((string)$cliente['nombres'] . ' ' . (string)$cliente['apellidos']); ?>
+                    <?php if ($cliente['tipo_cliente'] === 'Empresa') { ?>
+                        <p><strong><?php echo e(trim((string)$cliente['razon_social']) !== '' ? $cliente['razon_social'] : rb_cliente_nombre($cliente)); ?></strong></p>
+                        <p>RUC <?php echo e($cliente['numero_documento']); ?></p>
+                        <?php if ($cliente_contacto !== '') { ?>
+                            <p><strong>Contacto:</strong> <?php echo e($cliente_contacto); ?></p>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <p><strong><?php echo e(rb_cliente_nombre($cliente)); ?></strong></p>
+                        <p><?php echo e($cliente['documento_tipo']); ?> <?php echo e($cliente['numero_documento']); ?></p>
+                    <?php } ?>
                     <?php if (trim((string)$cliente['direccion']) !== '') { ?>
                         <p><?php echo e($cliente['direccion']); ?></p>
                     <?php } ?>

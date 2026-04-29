@@ -213,7 +213,7 @@ function cs_render_clientes_table()
                 <th>Contacto</th>
                 <th>Servicios</th>
                 <th>Estado</th>
-                <th width="150">Acciones</th>
+                <th width="280">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -248,6 +248,10 @@ function cs_render_clientes_table()
                         <div class="app-action-buttons">
                             <button type="button" class="btn btn-sm btn-info btnVerCliente" data-id="<?php echo e($cliente['id']); ?>" title="Ver detalle">
                                 <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success btnCargarServicioCliente" data-id="<?php echo e($cliente['id']); ?>" data-nombre="<?php echo e(cs_cliente_nombre($cliente)); ?>" title="Cargar servicio al cliente">
+                                <i class="fas fa-plus-circle mr-1"></i>
+                                Cargar servicio
                             </button>
                             <button type="button" class="btn btn-sm btn-primary btnEditarCliente" data-id="<?php echo e($cliente['id']); ?>" title="Editar">
                                 <i class="fas fa-edit"></i>
@@ -370,7 +374,7 @@ function cs_render_cliente_detalle($cliente_id)
                     </h3>
                     <button type="button" class="btn btn-sm btn-primary ml-auto btnNuevoServicioCliente" data-cliente-id="<?php echo e($cliente['id']); ?>">
                         <i class="fas fa-plus mr-1"></i>
-                        Asignar servicio
+                        Cargar servicio al cliente
                     </button>
                 </div>
                 <div class="card-body">

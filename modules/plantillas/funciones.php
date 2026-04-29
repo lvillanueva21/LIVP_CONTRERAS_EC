@@ -332,8 +332,8 @@ function pl_render_preview($plantilla_id)
 
                 <?php if ((int)$plantilla['datos_cliente_visible'] === 1) { ?>
                     <div class="pl-doc-cliente">
-                        <strong>Cliente demo:</strong> Comercial Demo SAC<br>
-                        <span>RUC 20600000001 | contacto@demoempresa.pe</span>
+                        <strong>Cliente:</strong> Comercial Contreras SAC<br>
+                        <span>RUC 20600000001 | contacto@contreras.pe</span>
                     </div>
                 <?php } ?>
 

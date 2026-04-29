@@ -45,8 +45,8 @@ function auth_demo_user()
 {
     return array(
         'id' => 1,
-        'name' => 'Usuario demo',
-        'email' => 'demo@contreras.local',
+        'name' => 'Usuario administrador',
+        'email' => 'administrador@contreras.local',
         'role' => 'Administrador',
         'mode' => 'demo',
         'token' => null

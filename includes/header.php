@@ -41,11 +41,6 @@ $user = auth_user();
                 <?php echo e($user['name']); ?>
             </span>
         </li>
-        <li class="nav-item d-none d-md-flex align-items-center mr-3">
-            <span class="badge badge-info">
-                Modo <?php echo e(strtoupper(auth_mode())); ?>
-            </span>
-        </li>
         <li class="nav-item">
             <span class="nav-link app-clock" id="appClock">
                 <?php echo e(app_date_time()); ?>

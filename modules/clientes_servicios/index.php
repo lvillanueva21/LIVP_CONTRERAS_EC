@@ -17,7 +17,7 @@ $etiquetas_options = cs_render_etiquetas_options();
             <div class="card-header d-flex align-items-center">
                 <h3 class="card-title mb-0">
                     <i class="fas fa-users mr-1"></i>
-                    Clientes y servicios asignados
+                    Clientes y servicios
                 </h3>
 
                 <div class="ml-auto">
@@ -74,8 +74,6 @@ $etiquetas_options = cs_render_etiquetas_options();
                         <select name="documento_tipo" id="clienteDocumentoTipo" class="custom-select" required>
                             <option value="RUC">RUC</option>
                             <option value="DNI">DNI</option>
-                            <option value="CE">CE</option>
-                            <option value="PASAPORTE">PASAPORTE</option>
                         </select>
                     </div>
 
@@ -95,17 +93,20 @@ $etiquetas_options = cs_render_etiquetas_options();
                     <input type="text" name="nombre_comercial" id="clienteNombreComercial" class="form-control" maxlength="180" data-char-counter="true">
                 </div>
 
-                <div class="form-row cliente-campo-persona">
+                <div class="form-row cliente-campo-contacto">
                     <div class="form-group col-md-6">
-                        <label>Nombres <span class="app-required">*</span></label>
+                        <label>Nombres</label>
                         <input type="text" name="nombres" id="clienteNombres" class="form-control" maxlength="120" data-char-counter="true">
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label>Apellidos <span class="app-required">*</span></label>
+                        <label>Apellidos</label>
                         <input type="text" name="apellidos" id="clienteApellidos" class="form-control" maxlength="120" data-char-counter="true">
                     </div>
                 </div>
+                <small class="app-form-help d-block mb-3" id="clienteContactoAyuda">
+                    Para persona natural son obligatorios. Para empresa son opcionales como contacto o representante.
+                </small>
 
                 <div class="form-group">
                     <label>Dirección</label>
@@ -179,7 +180,7 @@ $etiquetas_options = cs_render_etiquetas_options();
     <div class="modal-dialog modal-lg" role="document">
         <form id="formServicioCliente" class="modal-content" autocomplete="off">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalServicioClienteTitulo">Asignar servicio</h5>
+                <h5 class="modal-title" id="modalServicioClienteTitulo">Cargar servicio al cliente</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>

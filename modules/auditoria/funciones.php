@@ -182,7 +182,7 @@ function au_render_tabla($filtros = array())
                     <td><?php echo trim((string)$item['tabla_afectada']) !== '' ? e($item['tabla_afectada']) : '<span class="text-muted">---</span>'; ?></td>
                     <td><?php echo $item['registro_id'] !== null ? e($item['registro_id']) : '<span class="text-muted">---</span>'; ?></td>
                     <td><?php echo e($item['descripcion']); ?></td>
-                    <td><?php echo trim((string)$item['usuario_externo_id']) !== '' ? e($item['usuario_externo_id']) : '<span class="text-muted">demo</span>'; ?></td>
+                    <td><?php echo trim((string)$item['usuario_externo_id']) !== '' ? e($item['usuario_externo_id']) : '<span class="text-muted">---</span>'; ?></td>
                     <td><?php echo trim((string)$item['ip']) !== '' ? e($item['ip']) : '<span class="text-muted">---</span>'; ?></td>
                 </tr>
             <?php } ?>

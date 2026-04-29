@@ -12,6 +12,7 @@
             this.bindEtiquetas();
             this.bindConfirmacion();
             this.actualizarTipoCliente();
+            this.bindValidacionesCliente();
         },
 
         bindClientes: function () {
@@ -25,8 +26,26 @@
                 ClientesServicios.actualizarTipoCliente();
             });
 
+            $(document).on('click', '.btnCargarServicioCliente', function () {
+                var clienteId = $(this).attr('data-id');
+                var clienteNombre = $(this).attr('data-nombre') || '';
+
+                ClientesServicios.limpiarServicio();
+                $('#servicioClienteId').val(clienteId);
+                $('#modalServicioClienteTitulo').text('Cargar servicio al cliente');
+
+                if (clienteNombre !== '') {
+                    $('#modalServicioClienteTitulo').text('Cargar servicio al cliente: ' + clienteNombre);
+                }
+
+                AppUI.openModal('#modalServicioCliente');
+            });
+
             $('#formCliente').on('submit', function (event) {
                 event.preventDefault();
+                if (!ClientesServicios.validarClienteFormulario()) {
+                    return;
+                }
 
                 AppAjax.sendForm(this, {
                     url: ClientesServicios.ajaxUrl,
@@ -62,7 +81,7 @@
             $(document).on('click', '.btnNuevoServicioCliente', function () {
                 ClientesServicios.limpiarServicio();
                 $('#servicioClienteId').val($(this).attr('data-cliente-id'));
-                $('#modalServicioClienteTitulo').text('Asignar servicio');
+                $('#modalServicioClienteTitulo').text('Cargar servicio al cliente');
                 AppUI.openModal('#modalServicioCliente');
             });
 
@@ -141,7 +160,6 @@
             $('#formCliente')[0].reset();
             $('#clienteId').val('0');
             $('#clienteTipo').val('Empresa');
-            $('#clienteDocumentoTipo').val('RUC');
             $('#clienteEstado').val('1');
             this.actualizarTipoCliente();
             AppUI.refresh();
@@ -149,17 +167,87 @@
 
         actualizarTipoCliente: function () {
             var tipo = $('#clienteTipo').val();
+            var documentoTipo = $('#clienteDocumentoTipo');
+            var numeroDocumento = $('#clienteNumeroDocumento');
+            var ayuda = $('#clienteContactoAyuda');
 
             if (tipo === 'Persona natural') {
                 $('.cliente-campo-empresa').hide();
-                $('.cliente-campo-persona').show();
-                $('#clienteDocumentoTipo').val('DNI');
+                $('.cliente-campo-contacto').show();
+                documentoTipo.val('DNI');
+                numeroDocumento.attr('maxlength', '8');
+                numeroDocumento.attr('inputmode', 'numeric');
+                numeroDocumento.attr('placeholder', 'DNI de 8 dígitos');
+                ayuda.text('Para persona natural, nombres y apellidos son obligatorios.');
                 return;
             }
 
             $('.cliente-campo-empresa').show();
-            $('.cliente-campo-persona').hide();
-            $('#clienteDocumentoTipo').val('RUC');
+            $('.cliente-campo-contacto').show();
+            documentoTipo.val('RUC');
+            numeroDocumento.attr('maxlength', '11');
+            numeroDocumento.attr('inputmode', 'numeric');
+            numeroDocumento.attr('placeholder', 'RUC de 11 dígitos');
+            ayuda.text('Para empresa, nombres y apellidos son opcionales como contacto o representante.');
+        },
+
+        bindValidacionesCliente: function () {
+            $('#clienteNumeroDocumento').on('input', function () {
+                var tipo = $('#clienteTipo').val();
+                var value = String($(this).val() || '');
+
+                if (tipo === 'Empresa' || tipo === 'Persona natural') {
+                    $(this).val(value.replace(/\D+/g, ''));
+                }
+            });
+
+            $('#clienteDocumentoTipo').on('change', function () {
+                var tipo = $('#clienteTipo').val();
+
+                if (tipo === 'Empresa') {
+                    $(this).val('RUC');
+                    return;
+                }
+
+                if (tipo === 'Persona natural') {
+                    $(this).val('DNI');
+                }
+            });
+
+        },
+
+        validarClienteFormulario: function () {
+            var tipo = $('#clienteTipo').val();
+            var numeroDocumento = String($('#clienteNumeroDocumento').val() || '').trim();
+            var nombres = String($('#clienteNombres').val() || '').trim();
+            var apellidos = String($('#clienteApellidos').val() || '').trim();
+            var razonSocial = String($('#clienteRazonSocial').val() || '').trim();
+
+            if (tipo === 'Empresa') {
+                if (razonSocial === '') {
+                    AppUI.warning('Ingrese la razón social de la empresa.');
+                    return false;
+                }
+
+                if (!/^\d{11}$/.test(numeroDocumento)) {
+                    AppUI.warning('El RUC debe tener exactamente 11 dígitos numéricos.');
+                    return false;
+                }
+            }
+
+            if (tipo === 'Persona natural') {
+                if (nombres === '' || apellidos === '') {
+                    AppUI.warning('Para persona natural, ingrese nombres y apellidos.');
+                    return false;
+                }
+
+                if (!/^\d{8}$/.test(numeroDocumento)) {
+                    AppUI.warning('El DNI debe tener exactamente 8 dígitos numéricos.');
+                    return false;
+                }
+            }
+
+            return true;
         },
 
         editarCliente: function (id) {
