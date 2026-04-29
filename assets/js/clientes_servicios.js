@@ -69,6 +69,10 @@
                 ClientesServicios.verDetalleCliente($(this).attr('data-id'));
             });
 
+            $(document).on('click', '.btnTimelineCliente', function () {
+                ClientesServicios.verTimelineCliente($(this).attr('data-id'));
+            });
+
             $(document).on('click', '.btnDesactivarCliente', function () {
                 var id = $(this).attr('data-id');
                 var nombre = $(this).attr('data-nombre');
@@ -366,6 +370,20 @@
                         $('#detalleClienteContenido').html(response.html);
                         AppTablas.refresh();
                         AppUI.openModal('#modalDetalleCliente');
+                    }
+                }
+            });
+        },
+
+        verTimelineCliente: function (id) {
+            AppAjax.get(this.ajaxUrl, {
+                action: 'timeline_cliente',
+                cliente_id: id
+            }, {
+                onSuccess: function (response) {
+                    if (response && response.ok) {
+                        $('#timelineClienteContenido').html(response.html);
+                        AppUI.openModal('#modalTimelineCliente');
                     }
                 }
             });

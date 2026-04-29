@@ -312,6 +312,25 @@ function cs_action_detalle_cliente()
     ));
 }
 
+function cs_action_timeline_cliente()
+{
+    $cliente_id = (int)cs_request('cliente_id', cs_request('id', 0));
+    $cliente = cs_obtener_cliente($cliente_id);
+
+    if (!$cliente) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Cliente no encontrado.'
+        ), 404);
+    }
+
+    cs_json(array(
+        'ok' => true,
+        'html' => cs_render_timeline_cliente($cliente_id),
+        'resumen' => cs_resumen_financiero_cliente($cliente_id)
+    ));
+}
+
 function cs_action_obtener_servicio_cliente()
 {
     $id = (int)cs_request('id', 0);
@@ -804,6 +823,10 @@ try {
 
     if ($action === 'detalle_cliente') {
         cs_action_detalle_cliente();
+    }
+
+    if ($action === 'timeline_cliente') {
+        cs_action_timeline_cliente();
     }
 
     if ($action === 'obtener_servicio_cliente') {

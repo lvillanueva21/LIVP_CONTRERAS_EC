@@ -47,6 +47,11 @@ $app_modules = array(
         'icon' => 'fas fa-tachometer-alt',
         'enabled' => true
     ),
+    'usuarios' => array(
+        'label' => 'Usuarios',
+        'icon' => 'fas fa-user-cog',
+        'enabled' => true
+    ),
     'clientes_servicios' => array(
         'label' => 'Clientes y servicios',
         'icon' => 'fas fa-users',

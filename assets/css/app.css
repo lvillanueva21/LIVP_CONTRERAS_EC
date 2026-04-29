@@ -523,6 +523,48 @@ body {
     margin-top: 0.25rem;
 }
 
+.cs-timeline-resumen {
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.45rem;
+    background: #f8f9fa;
+    padding: 0.75rem;
+}
+
+.cs-timeline-cliente {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.cs-timeline-totales {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.cs-timeline-total-item {
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.35rem;
+    background: #ffffff;
+    padding: 0.55rem 0.6rem;
+    display: grid;
+    gap: 0.2rem;
+}
+
+.cs-timeline-total-item span {
+    color: #6c757d;
+    font-size: 0.82rem;
+}
+
+.cs-timeline-total-item strong {
+    color: #343a40;
+}
+
+.cs-timeline-vertical .timeline-item {
+    border-radius: 0.35rem;
+}
+
 #servicioEtiquetas {
     min-height: 110px;
 }
@@ -553,6 +595,10 @@ body {
     #modalServicioCliente .modal-dialog,
     #modalCliente .modal-dialog {
         margin: 0.5rem;
+    }
+
+    .cs-timeline-totales {
+        grid-template-columns: 1fr;
     }
 }
 

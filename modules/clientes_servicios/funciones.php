@@ -286,6 +286,9 @@ function cs_render_clientes_table()
                             <button type="button" class="btn btn-sm btn-info btnVerCliente" data-id="<?php echo e($cliente['id']); ?>" title="Ver detalle">
                                 <i class="fas fa-eye"></i>
                             </button>
+                            <button type="button" class="btn btn-sm btn-dark btnTimelineCliente" data-id="<?php echo e($cliente['id']); ?>" title="Línea de tiempo del cliente">
+                                <i class="fas fa-clock"></i>
+                            </button>
                             <button type="button" class="btn btn-sm btn-success btnCargarServicioCliente" data-id="<?php echo e($cliente['id']); ?>" data-nombre="<?php echo e(cs_cliente_nombre($cliente)); ?>" title="Cargar servicio al cliente">
                                 <i class="fas fa-plus-circle mr-1"></i>
                                 Cargar servicio
@@ -408,6 +411,190 @@ function cs_obtener_servicio_asignado($id)
     $stmt->execute(array(':id' => (int)$id));
 
     return $stmt->fetch();
+}
+
+function cs_resumen_financiero_cliente($cliente_id)
+{
+    $pdo = app_pdo();
+
+    $sql = "
+        SELECT
+            COALESCE(SUM(CASE WHEN cs.estado <> 'Anulado' THEN cs.monto ELSE 0 END), 0) AS total_asignado,
+            COALESCE(SUM(CASE WHEN cs.estado <> 'Anulado' THEN COALESCE(pg.total_pagado, 0) ELSE 0 END), 0) AS total_pagado
+        FROM ecc_cliente_servicios cs
+        LEFT JOIN (
+            SELECT
+                rd.cliente_servicio_id,
+                SUM(rd.monto_pagado) AS total_pagado
+            FROM ecc_recibo_detalles rd
+            INNER JOIN ecc_recibos r ON r.id = rd.recibo_id
+            WHERE r.estado = 'Emitido'
+              AND rd.cliente_servicio_id IS NOT NULL
+            GROUP BY rd.cliente_servicio_id
+        ) pg ON pg.cliente_servicio_id = cs.id
+        WHERE cs.cliente_id = :cliente_id
+    ";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(':cliente_id' => (int)$cliente_id));
+    $row = $stmt->fetch();
+
+    $total_asignado = isset($row['total_asignado']) ? (float)$row['total_asignado'] : 0.00;
+    $total_pagado = isset($row['total_pagado']) ? (float)$row['total_pagado'] : 0.00;
+    $deuda_actual = $total_asignado - $total_pagado;
+
+    if ($deuda_actual < 0) {
+        $deuda_actual = 0.00;
+    }
+
+    return array(
+        'total_asignado' => round($total_asignado, 2),
+        'total_pagado' => round($total_pagado, 2),
+        'deuda_actual' => round($deuda_actual, 2)
+    );
+}
+
+function cs_listar_eventos_timeline_cliente($cliente_id)
+{
+    $pdo = app_pdo();
+
+    $sql = "
+        SELECT *
+        FROM (
+            SELECT
+                CONCAT(cs.fecha_asignacion, ' 00:00:00') AS fecha_evento,
+                'asignacion' AS tipo_evento,
+                CONCAT('Servicio asignado: ', s.nombre) AS titulo,
+                CONCAT(
+                    'Estado: ', cs.estado,
+                    CASE
+                        WHEN cs.periodo IS NOT NULL AND cs.periodo <> '' THEN CONCAT(' | Periodo: ', cs.periodo)
+                        ELSE ''
+                    END
+                ) AS detalle,
+                cs.monto AS monto_asignado,
+                0.00 AS monto_pagado,
+                cs.estado AS estado_label
+            FROM ecc_cliente_servicios cs
+            INNER JOIN ecc_servicios s ON s.id = cs.servicio_id
+            WHERE cs.cliente_id = :cliente_id_asignacion
+
+            UNION ALL
+
+            SELECT
+                r.fecha_pago AS fecha_evento,
+                'pago' AS tipo_evento,
+                CONCAT('Pago registrado: ', r.codigo) AS titulo,
+                rd.descripcion AS detalle,
+                0.00 AS monto_asignado,
+                rd.monto_pagado AS monto_pagado,
+                rd.estado_servicio_resultante AS estado_label
+            FROM ecc_recibo_detalles rd
+            INNER JOIN ecc_recibos r ON r.id = rd.recibo_id
+            INNER JOIN ecc_cliente_servicios cs2 ON cs2.id = rd.cliente_servicio_id
+            WHERE cs2.cliente_id = :cliente_id_pago
+              AND r.estado = 'Emitido'
+        ) ev
+        ORDER BY ev.fecha_evento DESC, ev.tipo_evento ASC
+    ";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        ':cliente_id_asignacion' => (int)$cliente_id,
+        ':cliente_id_pago' => (int)$cliente_id
+    ));
+
+    return $stmt->fetchAll();
+}
+
+function cs_render_timeline_cliente($cliente_id)
+{
+    $cliente = cs_obtener_cliente($cliente_id);
+
+    if (!$cliente) {
+        return '<div class="alert alert-warning mb-0">Cliente no encontrado.</div>';
+    }
+
+    $eventos = cs_listar_eventos_timeline_cliente($cliente_id);
+    $resumen = cs_resumen_financiero_cliente($cliente_id);
+    $nombre_cliente = cs_cliente_nombre($cliente);
+
+    ob_start();
+    ?>
+    <div class="cs-timeline-resumen mb-3">
+        <div class="cs-timeline-cliente mb-2">
+            <strong><?php echo e($nombre_cliente); ?></strong>
+            <span class="text-muted ml-2"><?php echo e($cliente['documento_tipo']); ?> <?php echo e($cliente['numero_documento']); ?></span>
+        </div>
+        <div class="cs-timeline-totales">
+            <div class="cs-timeline-total-item">
+                <span>Total asignado</span>
+                <strong><?php echo e(app_money($resumen['total_asignado'])); ?></strong>
+            </div>
+            <div class="cs-timeline-total-item">
+                <span>Total pagado</span>
+                <strong class="text-success"><?php echo e(app_money($resumen['total_pagado'])); ?></strong>
+            </div>
+            <div class="cs-timeline-total-item">
+                <span>Deuda actual</span>
+                <strong class="text-danger"><?php echo e(app_money($resumen['deuda_actual'])); ?></strong>
+            </div>
+        </div>
+    </div>
+
+    <?php if (empty($eventos)) { ?>
+        <div class="app-empty-state">
+            <div class="app-empty-state-icon"><i class="fas fa-clock"></i></div>
+            <h5>Sin movimientos</h5>
+            <p>Este cliente no tiene servicios asignados ni pagos registrados.</p>
+        </div>
+    <?php } else { ?>
+        <div class="timeline timeline-sm cs-timeline-vertical">
+            <?php $fecha_actual = ''; ?>
+            <?php foreach ($eventos as $evento) { ?>
+                <?php
+                $timestamp = strtotime((string)$evento['fecha_evento']);
+                $fecha = $timestamp ? date('d/m/Y', $timestamp) : '';
+                $hora = $timestamp ? date('H:i', $timestamp) : '--:--';
+
+                if ($fecha !== '' && $fecha !== $fecha_actual) {
+                    $fecha_actual = $fecha;
+                    ?>
+                    <div class="time-label">
+                        <span class="bg-secondary"><?php echo e($fecha); ?></span>
+                    </div>
+                <?php } ?>
+
+                <?php
+                $es_pago = $evento['tipo_evento'] === 'pago';
+                $icono = $es_pago ? 'fas fa-coins bg-success' : 'fas fa-plus bg-primary';
+                ?>
+                <div>
+                    <i class="<?php echo e($icono); ?>"></i>
+                    <div class="timeline-item">
+                        <span class="time"><i class="fas fa-clock"></i> <?php echo e($hora); ?></span>
+                        <h3 class="timeline-header"><?php echo e($evento['titulo']); ?></h3>
+                        <div class="timeline-body">
+                            <?php if (trim((string)$evento['detalle']) !== '') { ?>
+                                <div><?php echo e($evento['detalle']); ?></div>
+                            <?php } ?>
+                            <?php if ($es_pago) { ?>
+                                <div><strong>Monto pagado:</strong> <?php echo e(app_money($evento['monto_pagado'])); ?></div>
+                            <?php } else { ?>
+                                <div><strong>Monto asignado:</strong> <?php echo e(app_money($evento['monto_asignado'])); ?></div>
+                            <?php } ?>
+                            <div><strong>Estado:</strong> <?php echo e($evento['estado_label']); ?></div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+            <div>
+                <i class="far fa-clock bg-gray"></i>
+            </div>
+        </div>
+    <?php } ?>
+    <?php
+    return ob_get_clean();
 }
 
 function cs_render_cliente_detalle($cliente_id)

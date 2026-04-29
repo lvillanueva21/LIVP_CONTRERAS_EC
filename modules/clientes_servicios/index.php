@@ -269,6 +269,29 @@ $catalogo_servicios_html = cs_render_catalogo_servicios_table();
     </div>
 </div>
 
+<div class="modal fade" id="modalTimelineCliente" tabindex="-1" role="dialog" aria-labelledby="modalTimelineClienteTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTimelineClienteTitulo">Línea de tiempo de servicios</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="timelineClienteContenido">
+                <div class="app-empty-state">
+                    <div class="app-empty-state-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h5>Seleccione un cliente</h5>
+                    <p>La línea de tiempo se cargará aquí.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modalServicioCliente" tabindex="-1" role="dialog" aria-labelledby="modalServicioClienteTitulo" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <form id="formServicioCliente" class="modal-content" autocomplete="off">
