@@ -221,6 +221,14 @@ $metodos_checks = pl_render_metodos_checks();
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalVistaPreviaPlantillaTitulo">Vista previa de plantilla</h5>
+                <button type="button" class="btn btn-sm btn-outline-secondary mr-2" id="btnDescargarVistaPreviaJpg" title="Descargar vista previa en JPG">
+                    <i class="fas fa-image mr-1"></i>
+                    JPG
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger mr-2" id="btnDescargarVistaPreviaPdf" title="Descargar vista previa en PDF">
+                    <i class="fas fa-file-pdf mr-1"></i>
+                    PDF
+                </button>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -268,3 +276,7 @@ $metodos_checks = pl_render_metodos_checks();
         </div>
     </div>
 </div>
+
+<script src="<?php echo e(asset_url('plugins/html2canvas/html2canvas.min.js')); ?>"></script>
+<script src="<?php echo e(asset_url('plugins/jspdf/jspdf.umd.min.js')); ?>"></script>
+<script src="<?php echo e(asset_url('assets/js/exportador.js')); ?>"></script>

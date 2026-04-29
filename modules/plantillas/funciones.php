@@ -297,7 +297,7 @@ function pl_render_preview($plantilla_id)
     ob_start();
     ?>
     <div class="pl-preview-shell">
-        <div class="pl-documento-preview pl-orientacion-<?php echo e(strtolower($plantilla['orientacion'])); ?>">
+        <div class="pl-documento-preview pl-orientacion-<?php echo e(strtolower($plantilla['orientacion'])); ?>" id="plPreviewExportable" data-export-orientacion="<?php echo e(strtolower($plantilla['orientacion'])); ?>">
             <div class="pl-doc-header" style="<?php echo $header_style; ?>">
                 <?php if ((int)$plantilla['logo_visible'] === 1) { ?>
                     <div class="pl-doc-logo pl-logo-<?php echo e(strtolower($plantilla['logo_tipo'])); ?>">

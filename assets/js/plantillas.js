@@ -44,6 +44,14 @@
                 Plantillas.vistaPrevia($(this).attr('data-id'));
             });
 
+            $('#btnDescargarVistaPreviaJpg').on('click', function () {
+                Plantillas.exportarVistaPrevia('jpg');
+            });
+
+            $('#btnDescargarVistaPreviaPdf').on('click', function () {
+                Plantillas.exportarVistaPrevia('pdf');
+            });
+
             $(document).on('click', '.btnCambiarEstadoPlantilla', function () {
                 var id = $(this).attr('data-id');
                 var estado = parseInt($(this).attr('data-estado'), 10);
@@ -166,6 +174,72 @@
                     }
                 }
             });
+        },
+
+        timestampArchivo: function () {
+            var d = new Date();
+
+            return d.getFullYear() +
+                String(d.getMonth() + 1).padStart(2, '0') +
+                String(d.getDate()).padStart(2, '0') + '-' +
+                String(d.getHours()).padStart(2, '0') +
+                String(d.getMinutes()).padStart(2, '0') +
+                String(d.getSeconds()).padStart(2, '0');
+        },
+
+        nombreArchivoPreview: function () {
+            var texto = $.trim($('#plantillaVistaPreviaContenido .pl-doc-title span').first().text());
+
+            if (texto === '') {
+                texto = 'plantilla';
+            }
+
+            return AppExportador.nombreSeguro('vista-previa-' + texto + '-' + this.timestampArchivo());
+        },
+
+        orientacionPreview: function (documento) {
+            if (!documento) {
+                return 'vertical';
+            }
+
+            if (documento.getAttribute('data-export-orientacion') === 'horizontal') {
+                return 'horizontal';
+            }
+
+            return 'vertical';
+        },
+
+        exportarVistaPrevia: function (tipo) {
+            if (!window.AppExportador) {
+                AppUI.error('No se cargó el exportador local.');
+                return;
+            }
+
+            var documento = $('#plantillaVistaPreviaContenido').find('#plPreviewExportable, .pl-documento-preview').first().get(0);
+
+            if (!documento) {
+                AppUI.warning('Primero abre una vista previa de plantilla.');
+                return;
+            }
+
+            var nombre = this.nombreArchivoPreview();
+
+            AppUI.info('Preparando vista previa para exportar...');
+
+            AppExportador.esperarRecursos(documento)
+                .then(function () {
+                    if (String(tipo).toLowerCase() === 'jpg') {
+                        return AppExportador.exportarJpg(documento, nombre);
+                    }
+
+                    return AppExportador.exportarPdf(documento, nombre, Plantillas.orientacionPreview(documento));
+                })
+                .then(function () {
+                    AppUI.success('Vista previa exportada correctamente.');
+                })
+                .catch(function (error) {
+                    AppUI.error(error && error.message ? error.message : 'No se pudo exportar la vista previa.');
+                });
         },
 
         confirmar: function (texto, callback) {
