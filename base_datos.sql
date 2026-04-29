@@ -788,6 +788,43 @@ SET
     `updated_by_external_id` = 'demo'
 WHERE `id` = 1;
 
+INSERT INTO `ecc_recibo_detalles`
+(`id`, `recibo_id`, `proforma_detalle_id`, `cliente_servicio_id`, `bloque`, `descripcion`, `monto_original`, `monto_pagado`, `estado_servicio_resultante`, `orden`)
+VALUES
+(1, 1, 1, 1, 'Actuales', 'Declaración mensual abril 2026', 150.00, 150.00, 'Pagado', 1)
+ON DUPLICATE KEY UPDATE
+`recibo_id` = VALUES(`recibo_id`),
+`proforma_detalle_id` = VALUES(`proforma_detalle_id`),
+`cliente_servicio_id` = VALUES(`cliente_servicio_id`),
+`bloque` = VALUES(`bloque`),
+`descripcion` = VALUES(`descripcion`),
+`monto_original` = VALUES(`monto_original`),
+`monto_pagado` = VALUES(`monto_pagado`),
+`estado_servicio_resultante` = VALUES(`estado_servicio_resultante`),
+`orden` = VALUES(`orden`);
+
+UPDATE `ecc_proforma_detalles`
+SET `estado` = 'Pagado'
+WHERE `id` = 1;
+
+UPDATE `ecc_proforma_detalles`
+SET `estado` = 'Pendiente'
+WHERE `id` = 2;
+
+UPDATE `ecc_cliente_servicios`
+SET `estado` = 'Pagado'
+WHERE `id` = 1;
+
+UPDATE `ecc_cliente_servicios`
+SET `estado` = 'Pendiente'
+WHERE `id` = 2;
+
+UPDATE `ecc_proformas`
+SET
+    `estado` = 'Parcial',
+    `updated_by_external_id` = 'demo'
+WHERE `id` = 1;
+
 
 INSERT INTO `ecc_recibos`
 (`id`, `codigo`, `proforma_id`, `cliente_id`, `plantilla_id`, `metodo_pago_id`, `fecha_emision`, `fecha_pago`, `total_proforma`, `total_pagado`, `saldo_pendiente`, `estado`, `observacion`, `created_by_external_id`)
