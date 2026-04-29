@@ -34,17 +34,27 @@ $user = auth_user();
         </li>
     </ul>
 
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item d-none d-md-flex align-items-center mr-3">
+    <ul class="navbar-nav ml-auto align-items-center">
+        <li class="nav-item d-none d-md-flex align-items-center mr-2">
             <span class="badge badge-light border">
                 <i class="fas fa-user-circle mr-1"></i>
-                <?php echo e($user['name']); ?>
+                <?php echo e($user ? $user['name'] : 'Sin sesión'); ?>
+            </span>
+        </li>
+        <li class="nav-item d-none d-md-flex align-items-center mr-3">
+            <span class="badge badge-secondary">
+                <?php echo e($user ? $user['role'] : '---'); ?>
             </span>
         </li>
         <li class="nav-item">
             <span class="nav-link app-clock" id="appClock">
                 <?php echo e(app_date_time()); ?>
             </span>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo e(app_url('logout.php')); ?>" title="Salir">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
         </li>
     </ul>
 </nav>

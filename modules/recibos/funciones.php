@@ -7,7 +7,20 @@ if (!defined('APP_BOOTSTRAP')) {
 function rb_external_id()
 {
     $user = auth_user();
-    return isset($user['mode']) && $user['mode'] !== '' ? $user['mode'] : 'demo';
+
+    if (isset($user['usuario']) && trim((string)$user['usuario']) !== '') {
+        return trim((string)$user['usuario']);
+    }
+
+    if (isset($user['dni']) && trim((string)$user['dni']) !== '') {
+        return trim((string)$user['dni']);
+    }
+
+    if (isset($user['mode']) && trim((string)$user['mode']) !== '') {
+        return trim((string)$user['mode']);
+    }
+
+    return 'sistema';
 }
 
 function rb_cliente_nombre($cliente)
@@ -530,17 +543,23 @@ function rb_render_servicios_adicionales($cliente_id, $proforma_id = 0)
                     <input type="checkbox"
                            class="rbServicioAdicionalCheck"
                            value="<?php echo e($servicio['id']); ?>"
-                           data-bloque="<?php echo e($servicio['bloque_documento']); ?>"
                            data-descripcion="<?php echo e($descripcion); ?>"
                            data-monto-original="<?php echo e($servicio['monto']); ?>">
                     <span>
                         <strong><?php echo e($servicio['servicio_nombre']); ?></strong>
                         <small>
-                            <?php echo e($servicio['bloque_documento']); ?> |
                             <?php echo e(app_money($servicio['monto'])); ?>
                         </small>
                     </span>
                 </label>
+                <div class="form-group mb-0">
+                    <label class="mb-1">Bloque del documento</label>
+                    <select class="custom-select custom-select-sm rbServicioAdicionalBloque">
+                        <option value="Actuales" <?php echo $servicio['bloque_documento'] === 'Actuales' ? 'selected' : ''; ?>>Actuales</option>
+                        <option value="Pendientes de pago" <?php echo $servicio['bloque_documento'] === 'Pendientes de pago' ? 'selected' : ''; ?>>Pendientes de pago</option>
+                        <option value="Otros servicios o trámites" <?php echo $servicio['bloque_documento'] === 'Otros servicios o trámites' ? 'selected' : ''; ?>>Otros servicios o trámites</option>
+                    </select>
+                </div>
                 <input type="number" class="form-control form-control-sm rbMontoServicioAdicional" min="0" step="0.01" value="<?php echo e(number_format((float)$servicio['monto'], 2, '.', '')); ?>">
             </div>
         <?php } ?>

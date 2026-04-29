@@ -61,6 +61,14 @@
                 Recibos.syncServicioAdicional($(this));
             });
 
+            $(document).on('change', '.rbServicioAdicionalBloque', function () {
+                var check = $(this).closest('.rb-item-pago').find('.rbServicioAdicionalCheck');
+
+                if (check.is(':checked')) {
+                    Recibos.syncServicioAdicional(check);
+                }
+            });
+
             $(document).on('input change', '.rbMontoServicioAdicional', function () {
                 var check = $(this).closest('.rb-item-pago').find('.rbServicioAdicionalCheck');
 
@@ -237,9 +245,12 @@
         syncServicioAdicional: function (check) {
             var id = check.val();
             var key = 'Servicio_' + id;
-            var montoInput = check.closest('.rb-item-pago').find('.rbMontoServicioAdicional');
+            var contenedor = check.closest('.rb-item-pago');
+            var montoInput = contenedor.find('.rbMontoServicioAdicional');
+            var bloqueSelect = contenedor.find('.rbServicioAdicionalBloque');
             var montoPagado = parseFloat(montoInput.val() || '0');
             var montoOriginal = parseFloat(check.attr('data-monto-original') || '0');
+            var bloque = bloqueSelect.length ? (bloqueSelect.val() || 'Actuales') : 'Actuales';
 
             if (montoPagado > montoOriginal) {
                 montoPagado = montoOriginal;
@@ -256,7 +267,7 @@
                     origen: 'Servicio adicional',
                     proforma_detalle_id: null,
                     cliente_servicio_id: parseInt(id, 10),
-                    bloque: check.attr('data-bloque') || 'Actuales',
+                    bloque: bloque,
                     descripcion: check.attr('data-descripcion') || '',
                     monto_original: montoOriginal,
                     monto_pagado: montoPagado

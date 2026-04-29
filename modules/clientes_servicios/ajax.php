@@ -513,6 +513,175 @@ function cs_action_guardar_servicio_cliente()
     ));
 }
 
+function cs_action_obtener_servicio_base()
+{
+    $id = (int)cs_request('id', 0);
+    $servicio = cs_obtener_servicio_general($id);
+
+    if (!$servicio) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Servicio base no encontrado.'
+        ), 404);
+    }
+
+    $servicio['etiquetas_ids'] = cs_etiquetas_servicio_ids($id);
+
+    cs_json(array(
+        'ok' => true,
+        'servicio' => $servicio
+    ));
+}
+
+function cs_action_guardar_servicio_base()
+{
+    $pdo = app_pdo();
+
+    $id = (int)cs_request('id', 0);
+    $nombre = cs_clean_string(cs_request('nombre'));
+    $descripcion = cs_clean_string(cs_request('descripcion'));
+    $precio_base = cs_clean_money(cs_request('precio_base', 0));
+    $estado = (int)cs_request('estado', 1) === 1 ? 1 : 0;
+    $etiquetas = isset($_POST['etiquetas']) && is_array($_POST['etiquetas']) ? $_POST['etiquetas'] : array();
+
+    if ($nombre === '') {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Ingrese el nombre del servicio base.'
+        ), 422);
+    }
+
+    if ($precio_base < 0) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'El precio base debe ser mayor o igual a cero.'
+        ), 422);
+    }
+
+    $params = array(':nombre' => $nombre);
+    $sql_duplicado = "SELECT id FROM ecc_servicios WHERE nombre = :nombre";
+
+    if ($id > 0) {
+        $sql_duplicado .= " AND id <> :id";
+        $params[':id'] = $id;
+    }
+
+    $sql_duplicado .= " LIMIT 1";
+    $stmt = $pdo->prepare($sql_duplicado);
+    $stmt->execute($params);
+
+    if ($stmt->fetch()) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Ya existe un servicio base con ese nombre.'
+        ), 409);
+    }
+
+    if ($id > 0) {
+        $anterior = cs_obtener_servicio_general($id);
+
+        if (!$anterior) {
+            cs_json(array(
+                'ok' => false,
+                'message' => 'Servicio base no encontrado.'
+            ), 404);
+        }
+
+        $upd = $pdo->prepare("
+            UPDATE ecc_servicios
+            SET
+                nombre = :nombre,
+                descripcion = :descripcion,
+                precio_base = :precio_base,
+                estado = :estado,
+                updated_by_external_id = :updated_by_external_id
+            WHERE id = :id
+        ");
+
+        $upd->execute(array(
+            ':nombre' => $nombre,
+            ':descripcion' => $descripcion !== '' ? $descripcion : null,
+            ':precio_base' => $precio_base,
+            ':estado' => $estado,
+            ':updated_by_external_id' => cs_external_id(),
+            ':id' => $id
+        ));
+
+        cs_sync_servicio_etiquetas($id, $etiquetas);
+        cs_auditoria('Actualizar servicio base', 'ecc_servicios', $id, 'Servicio base actualizado.', $anterior, cs_obtener_servicio_general($id));
+
+        cs_json(array(
+            'ok' => true,
+            'message' => 'Servicio base actualizado correctamente.',
+            'tabla_html' => cs_render_catalogo_servicios_table(),
+            'servicios_options' => cs_render_servicios_options($id)
+        ));
+    }
+
+    $ins = $pdo->prepare("
+        INSERT INTO ecc_servicios
+        (nombre, descripcion, precio_base, estado, created_by_external_id)
+        VALUES
+        (:nombre, :descripcion, :precio_base, :estado, :created_by_external_id)
+    ");
+
+    $ins->execute(array(
+        ':nombre' => $nombre,
+        ':descripcion' => $descripcion !== '' ? $descripcion : null,
+        ':precio_base' => $precio_base,
+        ':estado' => $estado,
+        ':created_by_external_id' => cs_external_id()
+    ));
+
+    $nuevo_id = (int)$pdo->lastInsertId();
+    cs_sync_servicio_etiquetas($nuevo_id, $etiquetas);
+    cs_auditoria('Crear servicio base', 'ecc_servicios', $nuevo_id, 'Servicio base creado.', null, cs_obtener_servicio_general($nuevo_id));
+
+    cs_json(array(
+        'ok' => true,
+        'message' => 'Servicio base creado correctamente.',
+        'tabla_html' => cs_render_catalogo_servicios_table(),
+        'servicios_options' => cs_render_servicios_options($nuevo_id)
+    ));
+}
+
+function cs_action_toggle_servicio_base()
+{
+    $pdo = app_pdo();
+
+    $id = (int)cs_request('id', 0);
+    $estado = (int)cs_request('estado', 0) === 1 ? 1 : 0;
+    $servicio = cs_obtener_servicio_general($id);
+
+    if (!$servicio) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Servicio base no encontrado.'
+        ), 404);
+    }
+
+    $upd = $pdo->prepare("
+        UPDATE ecc_servicios
+        SET estado = :estado, updated_by_external_id = :updated_by_external_id
+        WHERE id = :id
+    ");
+    $upd->execute(array(
+        ':estado' => $estado,
+        ':updated_by_external_id' => cs_external_id(),
+        ':id' => $id
+    ));
+
+    $nuevo = cs_obtener_servicio_general($id);
+    cs_auditoria(($estado === 1 ? 'Activar' : 'Inactivar') . ' servicio base', 'ecc_servicios', $id, 'Se cambió estado de servicio base.', $servicio, $nuevo);
+
+    cs_json(array(
+        'ok' => true,
+        'message' => $estado === 1 ? 'Servicio base activado correctamente.' : 'Servicio base inactivado correctamente.',
+        'tabla_html' => cs_render_catalogo_servicios_table(),
+        'servicios_options' => cs_render_servicios_options()
+    ));
+}
+
 function cs_action_anular_servicio_cliente()
 {
     $pdo = app_pdo();
@@ -654,6 +823,20 @@ try {
     if ($action === 'crear_etiqueta') {
         app_require_post();
         cs_action_crear_etiqueta();
+    }
+
+    if ($action === 'obtener_servicio_base') {
+        cs_action_obtener_servicio_base();
+    }
+
+    if ($action === 'guardar_servicio_base') {
+        app_require_post();
+        cs_action_guardar_servicio_base();
+    }
+
+    if ($action === 'toggle_servicio_base') {
+        app_require_post();
+        cs_action_toggle_servicio_base();
     }
 
     cs_json(array(

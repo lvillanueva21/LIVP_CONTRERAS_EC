@@ -66,6 +66,27 @@ CREATE TABLE IF NOT EXISTS `ecc_clientes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+CREATE TABLE IF NOT EXISTS `ecc_usuarios` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `dni` VARCHAR(8) NOT NULL,
+    `nombres` VARCHAR(120) NOT NULL,
+    `apellidos` VARCHAR(120) NOT NULL,
+    `usuario` VARCHAR(80) NOT NULL,
+    `clave_hash` VARCHAR(255) NOT NULL,
+    `rol` ENUM('Administrador') NOT NULL DEFAULT 'Administrador',
+    `estado` TINYINT(1) NOT NULL DEFAULT 1,
+    `ultimo_login_at` DATETIME NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `created_by_external_id` VARCHAR(80) NULL,
+    `updated_by_external_id` VARCHAR(80) NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_ecc_usuarios_dni` (`dni`),
+    UNIQUE KEY `uq_ecc_usuarios_usuario` (`usuario`),
+    KEY `idx_ecc_usuarios_estado` (`estado`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 CREATE TABLE IF NOT EXISTS `ecc_servicios` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `nombre` VARCHAR(180) NOT NULL,
@@ -558,11 +579,31 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se corrige la consulta de servicios disponibles en proformas para evitar mezclar servicios de otros clientes.
 
    2026-04-29 - FASE 11.5.3
-   - Se agregan totales por bloque en la UI y documento de proformas.
-   - Se agregan totales por bloque (original y pagado) en la UI y documento de recibos.
-   - Los métodos visibles del documento de recibo pasan a depender de la plantilla.
-   - ecc_recibos.metodo_pago_id se mantiene como método usado para pagar, no como lista visible del documento.
-   - No se crean tablas nuevas ni cambios estructurales.
+   - Se agregan totales por bloque en la interfaz de proformas.
+   - Se agregan totales por bloque en documentos de proformas.
+   - Se agregan totales original/pagado/saldo por bloque en recibos.
+   - Se mejora el resumen de pago en recibos.
+   - Los métodos visibles del recibo dependen de la plantilla.
+   - metodo_pago_id queda como método usado para pagar, no como reemplazo de métodos visibles.
+   - No se crean tablas nuevas.
+   - No se agregan columnas nuevas.
+
+   2026-04-29 - FASE 11.5.4
+   - Se implementa catálogo profesional de servicios base dentro de Clientes y servicios.
+   - Se permite crear, editar, activar e inactivar servicios base desde la interfaz.
+   - Se evita depender de phpMyAdmin para administrar servicios.
+   - Se registra auditoría para cambios en ecc_servicios.
+   - No se crean tablas nuevas ni cambios estructurales para esta fase.
+
+   2026-04-29 - FASE FINAL
+   - Se implementa login real.
+   - Se crea ecc_usuarios.
+   - Se crea registro temporal de usuarios.
+   - Se protege index.php y módulos.
+   - Se protege AJAX con respuesta 401.
+   - Se reemplaza el usuario temporal por usuario real de sesión.
+   - Se actualiza auditoría para usar usuario real.
+   - Se mantiene preparación futura para API/token.
 */
 
 
@@ -573,6 +614,11 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    ============================================================ */
 
 START TRANSACTION;
+
+/* Para usuarios de prueba:
+   - Se recomienda crear el usuario inicial desde registro.php (temporal) para generar clave_hash con password_hash().
+   - Si se carga por SQL manual, usar siempre un hash válido de password_hash() y no guardar claves en texto plano.
+*/
 
 INSERT INTO `ecc_clientes`
 (`id`, `tipo_cliente`, `documento_tipo`, `numero_documento`, `razon_social`, `nombre_comercial`, `nombres`, `apellidos`, `direccion`, `correo`, `celular`, `observacion`, `estado`, `created_by_external_id`)
@@ -914,6 +960,6 @@ COMMIT;
    Para entorno real:
    - Ejecutar QUERYS PARA EL SISTEMA.
    - Ejecutar QUERYS PARA TESTEO DEL SISTEMA solo en ambiente de prueba.
-   - No hay tablas de usuarios porque no existe login todavía.
-   - Los campos usuario_externo_id, created_by_external_id y updated_by_external_id quedan listos para integración futura por API/token.
+    - Crear el primer usuario con registro.php (temporal) o con INSERT manual usando password_hash().
+    - Los campos usuario_externo_id, created_by_external_id y updated_by_external_id ya usan usuario real de sesión.
 */

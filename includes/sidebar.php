@@ -38,6 +38,12 @@ $modules = app_modules();
                         </a>
                     </li>
                 <?php } ?>
+                <li class="nav-item mt-2">
+                    <a href="<?php echo e(app_url('logout.php')); ?>" class="nav-link">
+                        <i class="nav-icon fas fa-sign-out-alt"></i>
+                        <p>Salir</p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

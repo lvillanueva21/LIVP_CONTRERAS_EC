@@ -9,6 +9,7 @@ require_once __DIR__ . '/funciones.php';
 $clientes_html = cs_render_clientes_table();
 $servicios_options = cs_render_servicios_options();
 $etiquetas_options = cs_render_etiquetas_options();
+$catalogo_servicios_html = cs_render_catalogo_servicios_table();
 ?>
 
 <div class="row">
@@ -21,6 +22,10 @@ $etiquetas_options = cs_render_etiquetas_options();
                 </h3>
 
                 <div class="ml-auto">
+                    <button type="button" class="btn btn-sm btn-info" id="btnCatalogoServicios">
+                        <i class="fas fa-clipboard-list mr-1"></i>
+                        Catálogo de servicios
+                    </button>
                     <button type="button" class="btn btn-sm btn-secondary" id="btnNuevaEtiqueta">
                         <i class="fas fa-tags mr-1"></i>
                         Nueva etiqueta
@@ -43,6 +48,94 @@ $etiquetas_options = cs_render_etiquetas_options();
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCatalogoServicios" tabindex="-1" role="dialog" aria-labelledby="modalCatalogoServiciosTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCatalogoServiciosTitulo">Catálogo de servicios base</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="d-flex align-items-center mb-3">
+                    <p class="mb-0 text-muted">Administra los servicios base para usar en “Cargar servicio al cliente”.</p>
+                    <button type="button" class="btn btn-sm btn-primary ml-auto" id="btnNuevoServicioBase">
+                        <i class="fas fa-plus mr-1"></i>
+                        Nuevo servicio
+                    </button>
+                </div>
+
+                <div id="catalogoServiciosTablaContainer">
+                    <?php echo $catalogo_servicios_html; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalServicioBase" tabindex="-1" role="dialog" aria-labelledby="modalServicioBaseTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form id="formServicioBase" class="modal-content" autocomplete="off">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalServicioBaseTitulo">Nuevo servicio base</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="action" value="guardar_servicio_base">
+                <input type="hidden" name="id" id="servicioBaseId" value="0">
+
+                <div class="form-group">
+                    <label>Nombre <span class="app-required">*</span></label>
+                    <input type="text" name="nombre" id="servicioBaseNombre" class="form-control" maxlength="180" data-char-counter="true" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Precio base <span class="app-required">*</span></label>
+                        <input type="number" name="precio_base" id="servicioBasePrecio" class="form-control" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Estado</label>
+                        <select name="estado" id="servicioBaseEstado" class="custom-select">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Etiquetas</label>
+                    <select name="etiquetas[]" id="servicioBaseEtiquetas" class="custom-select" multiple>
+                        <?php echo $etiquetas_options; ?>
+                    </select>
+                    <small class="app-form-help">Puedes crear nuevas etiquetas con el botón “Nueva etiqueta”.</small>
+                </div>
+
+                <div class="form-group mb-0">
+                    <label>Descripción</label>
+                    <textarea name="descripcion" id="servicioBaseDescripcion" class="form-control" maxlength="500" data-char-counter="true" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i>
+                    Cerrar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save mr-1"></i>
+                    Guardar servicio base
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 

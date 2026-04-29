@@ -8,11 +8,19 @@ function cs_external_id()
 {
     $user = auth_user();
 
-    if (isset($user['mode']) && $user['mode'] !== '') {
-        return $user['mode'];
+    if (isset($user['usuario']) && trim((string)$user['usuario']) !== '') {
+        return trim((string)$user['usuario']);
     }
 
-    return 'demo';
+    if (isset($user['dni']) && trim((string)$user['dni']) !== '') {
+        return trim((string)$user['dni']);
+    }
+
+    if (isset($user['mode']) && trim((string)$user['mode']) !== '') {
+        return trim((string)$user['mode']);
+    }
+
+    return 'sistema';
 }
 
 function cs_cliente_nombre($cliente)
@@ -119,6 +127,35 @@ function cs_listar_servicios_generales()
 
     $stmt = $pdo->query($sql);
     return $stmt->fetchAll();
+}
+
+function cs_listar_catalogo_servicios()
+{
+    $pdo = app_pdo();
+
+    $sql = "
+        SELECT
+            s.*,
+            GROUP_CONCAT(DISTINCT e.nombre ORDER BY e.nombre SEPARATOR ', ') AS etiquetas,
+            COUNT(DISTINCT cs.id) AS total_usos
+        FROM ecc_servicios s
+        LEFT JOIN ecc_servicio_etiquetas se ON se.servicio_id = s.id
+        LEFT JOIN ecc_etiquetas e ON e.id = se.etiqueta_id AND e.estado = 1
+        LEFT JOIN ecc_cliente_servicios cs ON cs.servicio_id = s.id
+        GROUP BY s.id
+        ORDER BY s.id DESC
+    ";
+
+    $stmt = $pdo->query($sql);
+    return $stmt->fetchAll();
+}
+
+function cs_obtener_servicio_general($id)
+{
+    $pdo = app_pdo();
+    $stmt = $pdo->prepare("SELECT * FROM ecc_servicios WHERE id = :id LIMIT 1");
+    $stmt->execute(array(':id' => (int)$id));
+    return $stmt->fetch();
 }
 
 function cs_listar_etiquetas()
@@ -259,6 +296,63 @@ function cs_render_clientes_table()
                             <?php if ((int)$cliente['estado'] === 1) { ?>
                                 <button type="button" class="btn btn-sm btn-danger btnDesactivarCliente" data-id="<?php echo e($cliente['id']); ?>" data-nombre="<?php echo e(cs_cliente_nombre($cliente)); ?>" title="Desactivar">
                                     <i class="fas fa-ban"></i>
+                                </button>
+                            <?php } ?>
+                        </div>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+    <?php
+    return ob_get_clean();
+}
+
+function cs_render_catalogo_servicios_table()
+{
+    $servicios = cs_listar_catalogo_servicios();
+
+    ob_start();
+    ?>
+    <table class="table table-sm" data-app-table="true" data-page-length="10" data-empty-text="No hay servicios base registrados.">
+        <thead>
+            <tr>
+                <th>Servicio base</th>
+                <th>Precio base</th>
+                <th>Etiquetas</th>
+                <th>Usos</th>
+                <th>Estado</th>
+                <th width="180">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($servicios as $servicio) { ?>
+                <tr data-id="<?php echo e($servicio['id']); ?>">
+                    <td>
+                        <strong><?php echo e($servicio['nombre']); ?></strong>
+                        <?php if (trim((string)$servicio['descripcion']) !== '') { ?>
+                            <br>
+                            <small class="text-muted"><?php echo e($servicio['descripcion']); ?></small>
+                        <?php } ?>
+                    </td>
+                    <td><?php echo e(app_money($servicio['precio_base'])); ?></td>
+                    <td><?php echo cs_render_etiquetas_badges($servicio['etiquetas']); ?></td>
+                    <td>
+                        <span class="badge badge-light border"><?php echo e((int)$servicio['total_usos']); ?></span>
+                    </td>
+                    <td><?php echo cs_estado_cliente_badge($servicio['estado']); ?></td>
+                    <td>
+                        <div class="app-action-buttons">
+                            <button type="button" class="btn btn-sm btn-primary btnEditarServicioBase" data-id="<?php echo e($servicio['id']); ?>" title="Editar servicio base">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <?php if ((int)$servicio['estado'] === 1) { ?>
+                                <button type="button" class="btn btn-sm btn-danger btnToggleServicioBase" data-id="<?php echo e($servicio['id']); ?>" data-estado="0" data-nombre="<?php echo e($servicio['nombre']); ?>" title="Inactivar servicio">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            <?php } else { ?>
+                                <button type="button" class="btn btn-sm btn-success btnToggleServicioBase" data-id="<?php echo e($servicio['id']); ?>" data-estado="1" data-nombre="<?php echo e($servicio['nombre']); ?>" title="Activar servicio">
+                                    <i class="fas fa-check"></i>
                                 </button>
                             <?php } ?>
                         </div>

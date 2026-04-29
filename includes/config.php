@@ -9,15 +9,12 @@ date_default_timezone_set('America/Lima');
 $app_config = array(
     'app_name' => 'Estudio Contable Contreras',
     'app_short_name' => 'Contreras',
-    'app_version' => '0.1.0',
+    'app_version' => '0.2.0',
     'app_environment' => 'development',
     'app_debug' => true,
 
-    'auth_mode' => 'demo',
-    'auth_modes_available' => array(
-        'demo',
-        'central_api'
-    ),
+    'app_session_name' => 'ecc_session',
+    'app_registro_publico' => true,
 
     'default_module' => 'inicio',
 

@@ -1,0 +1,166 @@
+<?php
+define('APP_BOOTSTRAP', true);
+
+require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/conexion.php';
+
+/* Archivo temporal para crear usuarios. Puede eliminarse o desactivarse cuando ya no sea necesario. */
+if (!auth_registro_publico_habilitado()) {
+    http_response_code(403);
+    exit('Registro temporal deshabilitado.');
+}
+
+$errores = array();
+$ok = '';
+$datos = array(
+    'dni' => '',
+    'nombres' => '',
+    'apellidos' => '',
+    'usuario' => ''
+);
+
+if (app_request_method() === 'POST') {
+    $datos['dni'] = trim((string)($_POST['dni'] ?? ''));
+    $datos['nombres'] = trim((string)($_POST['nombres'] ?? ''));
+    $datos['apellidos'] = trim((string)($_POST['apellidos'] ?? ''));
+    $datos['usuario'] = trim((string)($_POST['usuario'] ?? ''));
+    $clave = (string)($_POST['clave'] ?? '');
+    $clave2 = (string)($_POST['clave_repetir'] ?? '');
+
+    if (!preg_match('/^\d{8}$/', $datos['dni'])) {
+        $errores[] = 'El DNI debe tener exactamente 8 dígitos numéricos.';
+    }
+
+    if ($datos['nombres'] === '') {
+        $errores[] = 'Ingresa los nombres.';
+    }
+
+    if ($datos['apellidos'] === '') {
+        $errores[] = 'Ingresa los apellidos.';
+    }
+
+    if ($datos['usuario'] === '') {
+        $errores[] = 'Ingresa el usuario.';
+    }
+
+    if (strlen($clave) < 8) {
+        $errores[] = 'La contraseña debe tener al menos 8 caracteres.';
+    }
+
+    if ($clave !== $clave2) {
+        $errores[] = 'La confirmación de contraseña no coincide.';
+    }
+
+    if (empty($errores)) {
+        $pdo = app_pdo();
+
+        $stmt = $pdo->prepare("SELECT id FROM ecc_usuarios WHERE usuario = :usuario OR dni = :dni LIMIT 1");
+        $stmt->execute(array(
+            ':usuario' => $datos['usuario'],
+            ':dni' => $datos['dni']
+        ));
+
+        if ($stmt->fetch()) {
+            $errores[] = 'Ya existe un usuario con ese DNI o nombre de usuario.';
+        } else {
+            $hash = password_hash($clave, PASSWORD_DEFAULT);
+
+            $ins = $pdo->prepare("\n                INSERT INTO ecc_usuarios\n                (dni, nombres, apellidos, usuario, clave_hash, rol, estado, created_by_external_id)\n                VALUES\n                (:dni, :nombres, :apellidos, :usuario, :clave_hash, 'Administrador', 1, :created_by_external_id)\n            ");
+            $ins->execute(array(
+                ':dni' => $datos['dni'],
+                ':nombres' => $datos['nombres'],
+                ':apellidos' => $datos['apellidos'],
+                ':usuario' => $datos['usuario'],
+                ':clave_hash' => $hash,
+                ':created_by_external_id' => $datos['usuario']
+            ));
+
+            $ok = 'Usuario creado correctamente. Ya puedes iniciar sesión.';
+            $datos = array('dni' => '', 'nombres' => '', 'apellidos' => '', 'usuario' => '');
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registro temporal | <?php echo e(app_config('app_name')); ?></title>
+    <link rel="stylesheet" href="<?php echo e(asset_url('plugins/fontawesome-free/css/all.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset_url('dist/css/adminlte.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset_url('assets/css/app.css')); ?>">
+</head>
+<body class="hold-transition register-page app-auth-page">
+<div class="register-box">
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <a href="<?php echo e(app_url('login.php')); ?>" class="h1"><b>Registro</b> temporal</a>
+        </div>
+        <div class="card-body">
+            <p class="login-box-msg">Crear usuario administrador</p>
+
+            <?php if (!empty($errores)) { ?>
+                <div class="alert alert-danger mb-3">
+                    <?php foreach ($errores as $error) { ?>
+                        <div><?php echo e($error); ?></div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+
+            <?php if ($ok !== '') { ?>
+                <div class="alert alert-success mb-3"><?php echo e($ok); ?></div>
+            <?php } ?>
+
+            <div class="alert alert-danger d-none mb-3" id="registroErrorCliente"></div>
+
+            <form method="post" action="<?php echo e(app_url('registro.php')); ?>" autocomplete="off" id="formRegistroTemporal">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="dni" maxlength="8" inputmode="numeric" pattern="\d{8}" placeholder="DNI (8 dígitos)" value="<?php echo e($datos['dni']); ?>" required>
+                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-id-card"></span></div></div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="nombres" placeholder="Nombres" value="<?php echo e($datos['nombres']); ?>" required>
+                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-user"></span></div></div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="apellidos" placeholder="Apellidos" value="<?php echo e($datos['apellidos']); ?>" required>
+                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-user-tag"></span></div></div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="usuario" placeholder="Usuario" value="<?php echo e($datos['usuario']); ?>" required>
+                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-at"></span></div></div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" name="clave" id="registroClave" placeholder="Contraseña" required>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary app-btn-eye" data-toggle-pass="#registroClave" aria-label="Mostrar u ocultar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" name="clave_repetir" id="registroClaveRepetir" placeholder="Repetir contraseña" required>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary app-btn-eye" data-toggle-pass="#registroClaveRepetir" aria-label="Mostrar u ocultar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Crear usuario</button>
+            </form>
+
+            <p class="mt-3 mb-0 text-center">
+                <a href="<?php echo e(app_url('login.php')); ?>">Volver al login</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="<?php echo e(asset_url('plugins/jquery/jquery.min.js')); ?>"></script>
+<script src="<?php echo e(asset_url('plugins/bootstrap/js/bootstrap.bundle.min.js')); ?>"></script>
+<script src="<?php echo e(asset_url('assets/js/registro.js')); ?>"></script>
+</body>
+</html>

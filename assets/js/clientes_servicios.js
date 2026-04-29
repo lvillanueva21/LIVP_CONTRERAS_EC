@@ -8,6 +8,7 @@
 
         init: function () {
             this.bindClientes();
+            this.bindCatalogoServicios();
             this.bindServicios();
             this.bindEtiquetas();
             this.bindConfirmacion();
@@ -43,6 +44,7 @@
 
             $('#formCliente').on('submit', function (event) {
                 event.preventDefault();
+
                 if (!ClientesServicios.validarClienteFormulario()) {
                     return;
                 }
@@ -73,6 +75,58 @@
 
                 ClientesServicios.confirmar('Se desactivará el cliente: ' + nombre, function () {
                     ClientesServicios.desactivarCliente(id);
+                });
+            });
+        },
+
+        bindCatalogoServicios: function () {
+            $('#btnCatalogoServicios').on('click', function () {
+                AppUI.openModal('#modalCatalogoServicios');
+                AppTablas.refresh();
+            });
+
+            $('#btnNuevoServicioBase').on('click', function () {
+                ClientesServicios.limpiarServicioBase();
+                $('#modalServicioBaseTitulo').text('Nuevo servicio base');
+                AppUI.openModal('#modalServicioBase');
+            });
+
+            $('#formServicioBase').on('submit', function (event) {
+                event.preventDefault();
+
+                AppAjax.sendForm(this, {
+                    url: ClientesServicios.ajaxUrl,
+                    onSuccess: function (response) {
+                        if (response && response.ok) {
+                            ClientesServicios.actualizarCatalogoYSelect(response, $('#servicioId').val() || '');
+                            AppUI.closeModal('#modalServicioBase');
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnEditarServicioBase', function () {
+                ClientesServicios.editarServicioBase($(this).attr('data-id'));
+            });
+
+            $(document).on('click', '.btnToggleServicioBase', function () {
+                var id = $(this).attr('data-id');
+                var estado = $(this).attr('data-estado');
+                var nombre = $(this).attr('data-nombre') || '';
+                var texto = estado === '1' ? 'Se activará el servicio base: ' : 'Se inactivará el servicio base: ';
+
+                ClientesServicios.confirmar(texto + nombre, function () {
+                    AppAjax.post(ClientesServicios.ajaxUrl, {
+                        action: 'toggle_servicio_base',
+                        id: id,
+                        estado: estado
+                    }, {
+                        onSuccess: function (response) {
+                            if (response && response.ok) {
+                                ClientesServicios.actualizarCatalogoYSelect(response, $('#servicioId').val() || '');
+                            }
+                        }
+                    });
                 });
             });
         },
@@ -136,7 +190,8 @@
                     url: ClientesServicios.ajaxUrl,
                     onSuccess: function (response) {
                         if (response && response.ok && response.etiqueta) {
-                            ClientesServicios.agregarEtiquetaSelector(response.etiqueta);
+                            ClientesServicios.agregarEtiquetaSelector(response.etiqueta, '#servicioEtiquetas');
+                            ClientesServicios.agregarEtiquetaSelector(response.etiqueta, '#servicioBaseEtiquetas');
                             AppUI.closeModal('#modalEtiqueta');
                         }
                     }
@@ -213,7 +268,6 @@
                     $(this).val('DNI');
                 }
             });
-
         },
 
         validarClienteFormulario: function () {
@@ -389,14 +443,65 @@
             });
         },
 
+        limpiarServicioBase: function () {
+            $('#formServicioBase')[0].reset();
+            $('#servicioBaseId').val('0');
+            $('#servicioBasePrecio').val('0.00');
+            $('#servicioBaseEstado').val('1');
+            $('#servicioBaseEtiquetas').val([]);
+            AppUI.refresh();
+        },
+
+        editarServicioBase: function (id) {
+            AppAjax.get(this.ajaxUrl, {
+                action: 'obtener_servicio_base',
+                id: id
+            }, {
+                onSuccess: function (response) {
+                    if (!response || !response.ok) {
+                        return;
+                    }
+
+                    var s = response.servicio;
+                    ClientesServicios.limpiarServicioBase();
+                    $('#modalServicioBaseTitulo').text('Editar servicio base');
+                    $('#servicioBaseId').val(s.id);
+                    $('#servicioBaseNombre').val(s.nombre);
+                    $('#servicioBaseDescripcion').val(s.descripcion);
+                    $('#servicioBasePrecio').val(parseFloat(s.precio_base || 0).toFixed(2));
+                    $('#servicioBaseEstado').val(String(s.estado));
+                    $('#servicioBaseEtiquetas').val(s.etiquetas_ids || []);
+                    AppUI.refresh();
+                    AppUI.openModal('#modalServicioBase');
+                }
+            });
+        },
+
+        actualizarCatalogoYSelect: function (response, selectedServicioId) {
+            if (response.tabla_html) {
+                $('#catalogoServiciosTablaContainer').html(response.tabla_html);
+                AppTablas.refresh();
+            }
+
+            if (response.servicios_options) {
+                $('#servicioId').html(response.servicios_options);
+
+                if (selectedServicioId) {
+                    $('#servicioId').val(String(selectedServicioId));
+                }
+
+                AppUI.refresh();
+            }
+        },
+
         limpiarEtiqueta: function () {
             $('#formEtiqueta')[0].reset();
             $('#etiquetaColor').val('#6c757d');
             AppUI.refresh();
         },
 
-        agregarEtiquetaSelector: function (etiqueta) {
-            var select = $('#servicioEtiquetas');
+        agregarEtiquetaSelector: function (etiqueta, selector) {
+            var select = $(selector);
             var exists = select.find('option[value="' + etiqueta.id + '"]').length > 0;
 
             if (!exists) {
@@ -410,6 +515,7 @@
             }
 
             select.val(valores);
+            AppUI.refresh();
         },
 
         confirmar: function (texto, callback) {

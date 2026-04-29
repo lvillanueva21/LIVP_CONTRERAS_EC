@@ -335,6 +335,15 @@ body {
     font-weight: 700;
 }
 
+.app-auth-page {
+    background: linear-gradient(135deg, #eef2f7 0%, #dbe6f3 100%);
+}
+
+.app-btn-eye {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 @media (max-width: 767.98px) {
     .app-table-top,
     .app-table-bottom {
@@ -397,6 +406,15 @@ body {
 
 #modalServicioCliente textarea {
     resize: vertical;
+}
+
+#catalogoServiciosTablaContainer .table td,
+#catalogoServiciosTablaContainer .table th {
+    vertical-align: top;
+}
+
+#servicioBaseEtiquetas {
+    min-height: 110px;
 }
 
 @media (max-width: 767.98px) {
@@ -1144,6 +1162,10 @@ body {
 
 .rb-item-pago small {
     color: #6c757d;
+}
+
+.rb-item-pago .rbServicioAdicionalBloque {
+    max-width: 320px;
 }
 
 .rb-item-pagado {
