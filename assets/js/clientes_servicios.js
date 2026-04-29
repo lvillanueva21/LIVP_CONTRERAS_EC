@@ -229,6 +229,14 @@
             });
         },
 
+        fechaAvisoParaInput: function (value) {
+            if (!value) {
+                return '';
+            }
+
+            return String(value).replace(' ', 'T').substring(0, 16);
+        },
+
         limpiarServicio: function () {
             $('#formServicioCliente')[0].reset();
             $('#clienteServicioId').val('0');
@@ -237,7 +245,10 @@
             $('#servicioEtiquetas').val([]);
             $('#servicioMonto').val('');
             $('#servicioBloque').val('Actuales');
+            $('#servicioFechaVencimiento').val('');
+            $('#servicioFechaAviso').val('');
             $('#servicioModoAviso').val('Sin aviso');
+            $('#servicioAvisoValor').val('');
             $('#servicioEstado').val('Pendiente');
             AppUI.refresh();
         },
@@ -265,8 +276,10 @@
                     $('#servicioPeriodo').val(s.periodo);
                     $('#servicioMonto').val(s.monto);
                     $('#servicioBloque').val(s.bloque_documento);
-                    $('#servicioFechaAviso').val(s.fecha_aviso);
+                    $('#servicioFechaVencimiento').val(s.fecha_vencimiento);
+                    $('#servicioFechaAviso').val(ClientesServicios.fechaAvisoParaInput(s.fecha_aviso));
                     $('#servicioModoAviso').val(s.modo_aviso);
+                    $('#servicioAvisoValor').val(s.aviso_valor);
                     $('#servicioEstado').val(s.estado);
 
                     AppUI.refresh();

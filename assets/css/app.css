@@ -1487,3 +1487,70 @@ body {
         max-width: none !important;
     }
 }
+
+.dash-list {
+    display: grid;
+}
+
+.dash-list-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--ecc-border);
+    background: #ffffff;
+}
+
+.dash-list-item:last-child {
+    border-bottom: 0;
+}
+
+.dash-list-item strong {
+    display: block;
+    color: #343a40;
+}
+
+.dash-list-item small {
+    display: block;
+    color: #6c757d;
+}
+
+.dash-list-item-danger {
+    background: #fff5f5;
+}
+
+.timeline.timeline-sm {
+    margin: 0;
+}
+
+.timeline.timeline-sm::before {
+    left: 15px;
+}
+
+.timeline.timeline-sm > div {
+    margin-bottom: 0.75rem;
+}
+
+.timeline.timeline-sm > div > .fa,
+.timeline.timeline-sm > div > .fas,
+.timeline.timeline-sm > div > .far {
+    left: 3px;
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+    line-height: 26px;
+}
+
+.timeline.timeline-sm .timeline-item {
+    margin-left: 42px;
+}
+
+#auditoriaTablaContainer td {
+    vertical-align: top;
+}
+
+@media (max-width: 767.98px) {
+    .dash-list-item {
+        flex-direction: column;
+    }
+}

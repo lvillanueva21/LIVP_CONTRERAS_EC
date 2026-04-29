@@ -256,8 +256,9 @@ CREATE TABLE IF NOT EXISTS `ecc_cliente_servicios` (
     `estado` ENUM('Pendiente','En proforma','Pagado','Anulado') NOT NULL DEFAULT 'Pendiente',
     `fecha_asignacion` DATE NOT NULL,
     `fecha_vencimiento` DATE NULL,
-    `fecha_aviso` DATE NULL,
-    `modo_aviso` ENUM('Sin aviso','Fecha exacta','Antes de vencer','Manual') NOT NULL DEFAULT 'Sin aviso',
+    `fecha_aviso` DATETIME NULL,
+    `modo_aviso` ENUM('Sin aviso','Fecha exacta','Faltando X días','Faltando X horas','Faltando X minutos','Antes de vencer','Manual') NOT NULL DEFAULT 'Sin aviso',
+    `aviso_valor` INT UNSIGNED NULL,
     `observacion` TEXT NULL,
     `usuario_externo_id` VARCHAR(80) NULL,
     `created_by_external_id` VARCHAR(80) NULL,
@@ -538,6 +539,17 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se registra en ecc_auditoria la descarga JPG/PDF de proformas y recibos.
    - No se crean tablas nuevas.
    - No se agregan columnas nuevas.
+
+   2026-04-29 - FASE 11
+   - Se implementa dashboard final.
+   - Se implementa módulo Auditoría.
+   - Se implementan avisos de cobro.
+   - Se agregan métricas de ingresos de hoy, ingresos del mes, pendientes por cobrar, proformas emitidas y recibos emitidos.
+   - Se agrega gráfico local de ingresos usando Chart.js local de AdminLTE.
+   - Se cambia ecc_cliente_servicios.fecha_aviso de DATE a DATETIME.
+   - Se amplía ecc_cliente_servicios.modo_aviso para Fecha exacta, Faltando X días, Faltando X horas y Faltando X minutos.
+   - Se agrega ecc_cliente_servicios.aviso_valor.
+   - Se registran datos de prueba para ver dashboard funcionando.
 */
 
 
@@ -838,6 +850,39 @@ ON DUPLICATE KEY UPDATE
 `user_agent` = VALUES(`user_agent`),
 `usuario_externo_id` = VALUES(`usuario_externo_id`),
 `created_by_external_id` = VALUES(`created_by_external_id`);
+
+UPDATE `ecc_cliente_servicios`
+SET
+    `fecha_vencimiento` = DATE_ADD(CURDATE(), INTERVAL 3 DAY),
+    `fecha_aviso` = DATE_ADD(NOW(), INTERVAL 1 DAY),
+    `modo_aviso` = 'Fecha exacta',
+    `aviso_valor` = NULL,
+    `updated_by_external_id` = 'demo'
+WHERE `id` = 1;
+
+UPDATE `ecc_cliente_servicios`
+SET
+    `fecha_vencimiento` = DATE_ADD(CURDATE(), INTERVAL 5 DAY),
+    `fecha_aviso` = NULL,
+    `modo_aviso` = 'Faltando X días',
+    `aviso_valor` = 2,
+    `updated_by_external_id` = 'demo'
+WHERE `id` = 2;
+
+UPDATE `ecc_proformas`
+SET
+    `fecha_emision` = CURDATE(),
+    `estado` = 'Parcial',
+    `updated_by_external_id` = 'demo'
+WHERE `id` = 1;
+
+UPDATE `ecc_recibos`
+SET
+    `fecha_emision` = CURDATE(),
+    `fecha_pago` = CURDATE(),
+    `estado` = 'Emitido',
+    `updated_by_external_id` = 'demo'
+WHERE `id` = 1;
 
 COMMIT;
 

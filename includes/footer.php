@@ -26,6 +26,10 @@ $config = app_config();
 <script src="<?php echo e(asset_url('assets/js/ui.js')); ?>"></script>
 <script src="<?php echo e(asset_url('assets/js/ajax.js')); ?>"></script>
 <script src="<?php echo e(asset_url('assets/js/tablas.js')); ?>"></script>
+<?php if (isset($app_current_module) && $app_current_module === 'inicio') { ?>
+<script src="<?php echo e(asset_url('plugins/chart.js/Chart.min.js')); ?>"></script>
+<script src="<?php echo e(asset_url('assets/js/dashboard.js')); ?>"></script>
+<?php } ?>
 <?php if (isset($app_current_module) && in_array($app_current_module, array('proformas', 'recibos'), true)) { ?>
 <script src="<?php echo e(asset_url('plugins/html2canvas/html2canvas.min.js')); ?>"></script>
 <script src="<?php echo e(asset_url('plugins/jspdf/jspdf.umd.min.js')); ?>"></script>
@@ -48,6 +52,9 @@ $config = app_config();
 <?php } ?>
 <?php if (isset($app_current_module) && $app_current_module === 'recibos') { ?>
 <script src="<?php echo e(asset_url('assets/js/recibos.js')); ?>"></script>
+<?php } ?>
+<?php if (isset($app_current_module) && $app_current_module === 'auditoria') { ?>
+<script src="<?php echo e(asset_url('assets/js/auditoria.js')); ?>"></script>
 <?php } ?>
 </body>
 </html>

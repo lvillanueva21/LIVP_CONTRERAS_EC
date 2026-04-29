@@ -36,6 +36,40 @@ function cs_clean_money($value)
     return round((float)$value, 2);
 }
 
+function cs_clean_int_or_null($value)
+{
+    $value = trim((string)$value);
+
+    if ($value === '') {
+        return null;
+    }
+
+    $int = (int)$value;
+
+    return $int >= 0 ? $int : null;
+}
+
+function cs_clean_datetime_or_null($value)
+{
+    $value = trim((string)$value);
+
+    if ($value === '') {
+        return null;
+    }
+
+    $value = str_replace('T', ' ', $value);
+
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+        $value .= ' 00:00:00';
+    }
+
+    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $value)) {
+        $value .= ':00';
+    }
+
+    return $value;
+}
+
 function cs_validate_enum($value, $allowed, $default)
 {
     return in_array($value, $allowed, true) ? $value : $default;
@@ -288,8 +322,14 @@ function cs_action_guardar_servicio_cliente()
     $monto = cs_clean_money(cs_request('monto', 0));
     $bloque_documento = cs_validate_enum(cs_clean_string(cs_request('bloque_documento')), array('Actuales', 'Pendientes de pago', 'Otros servicios o trámites'), 'Actuales');
     $estado = cs_validate_enum(cs_clean_string(cs_request('estado')), array('Pendiente', 'En proforma', 'Pagado', 'Anulado'), 'Pendiente');
-    $fecha_aviso = cs_clean_string(cs_request('fecha_aviso'));
-    $modo_aviso = cs_validate_enum(cs_clean_string(cs_request('modo_aviso')), array('Sin aviso', 'Fecha exacta', 'Antes de vencer', 'Manual'), 'Sin aviso');
+    $fecha_vencimiento = cs_clean_string(cs_request('fecha_vencimiento'));
+    $fecha_aviso = cs_clean_datetime_or_null(cs_request('fecha_aviso'));
+    $modo_aviso = cs_validate_enum(
+        cs_clean_string(cs_request('modo_aviso')),
+        array('Sin aviso', 'Fecha exacta', 'Faltando X días', 'Faltando X horas', 'Faltando X minutos', 'Antes de vencer', 'Manual'),
+        'Sin aviso'
+    );
+    $aviso_valor = cs_clean_int_or_null(cs_request('aviso_valor'));
     $etiquetas = isset($_POST['etiquetas']) && is_array($_POST['etiquetas']) ? $_POST['etiquetas'] : array();
 
     if ($cliente_id <= 0) {
@@ -313,17 +353,46 @@ function cs_action_guardar_servicio_cliente()
         ), 422);
     }
 
-    if ($modo_aviso !== 'Sin aviso' && $fecha_aviso === '') {
+    if ($modo_aviso === 'Fecha exacta' && $fecha_aviso === null) {
         cs_json(array(
             'ok' => false,
-            'message' => 'Ingrese la fecha de aviso.'
+            'message' => 'Ingrese la fecha y hora exacta de aviso.'
         ), 422);
     }
 
-    $fecha_aviso_db = $fecha_aviso !== '' ? $fecha_aviso : null;
+    if (in_array($modo_aviso, array('Faltando X días', 'Faltando X horas', 'Faltando X minutos'), true)) {
+        if ($fecha_vencimiento === '') {
+            cs_json(array(
+                'ok' => false,
+                'message' => 'Ingrese la fecha de vencimiento para calcular el aviso.'
+            ), 422);
+        }
+
+        if ($aviso_valor === null || $aviso_valor <= 0) {
+            cs_json(array(
+                'ok' => false,
+                'message' => 'Ingrese el valor del aviso.'
+            ), 422);
+        }
+    }
+
+    if ($modo_aviso === 'Antes de vencer' && $fecha_vencimiento === '') {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Ingrese la fecha de vencimiento.'
+        ), 422);
+    }
+
+    if ($modo_aviso === 'Manual' && $fecha_aviso === null) {
+        cs_json(array(
+            'ok' => false,
+            'message' => 'Ingrese la fecha y hora manual del aviso.'
+        ), 422);
+    }
 
     if ($modo_aviso === 'Sin aviso') {
-        $fecha_aviso_db = null;
+        $fecha_aviso = null;
+        $aviso_valor = null;
     }
 
     if (!cs_obtener_cliente($cliente_id)) {
@@ -352,8 +421,10 @@ function cs_action_guardar_servicio_cliente()
                 monto = :monto,
                 bloque_documento = :bloque_documento,
                 estado = :estado,
+                fecha_vencimiento = :fecha_vencimiento,
                 fecha_aviso = :fecha_aviso,
                 modo_aviso = :modo_aviso,
+                aviso_valor = :aviso_valor,
                 updated_by_external_id = :updated_by_external_id
             WHERE id = :id AND cliente_id = :cliente_id
         ");
@@ -365,8 +436,10 @@ function cs_action_guardar_servicio_cliente()
             ':monto' => $monto,
             ':bloque_documento' => $bloque_documento,
             ':estado' => $estado,
-            ':fecha_aviso' => $fecha_aviso_db,
+            ':fecha_vencimiento' => $fecha_vencimiento !== '' ? $fecha_vencimiento : null,
+            ':fecha_aviso' => $fecha_aviso,
             ':modo_aviso' => $modo_aviso,
+            ':aviso_valor' => $aviso_valor,
             ':updated_by_external_id' => cs_external_id(),
             ':id' => $id,
             ':cliente_id' => $cliente_id
@@ -385,9 +458,9 @@ function cs_action_guardar_servicio_cliente()
 
     $stmt = $pdo->prepare("
         INSERT INTO ecc_cliente_servicios
-        (cliente_id, servicio_id, descripcion_personalizada, periodo, monto, bloque_documento, estado, fecha_asignacion, fecha_vencimiento, fecha_aviso, modo_aviso, created_by_external_id)
+        (cliente_id, servicio_id, descripcion_personalizada, periodo, monto, bloque_documento, estado, fecha_asignacion, fecha_vencimiento, fecha_aviso, modo_aviso, aviso_valor, created_by_external_id)
         VALUES
-        (:cliente_id, :servicio_id, :descripcion_personalizada, :periodo, :monto, :bloque_documento, :estado, CURDATE(), NULL, :fecha_aviso, :modo_aviso, :created_by_external_id)
+        (:cliente_id, :servicio_id, :descripcion_personalizada, :periodo, :monto, :bloque_documento, :estado, CURDATE(), :fecha_vencimiento, :fecha_aviso, :modo_aviso, :aviso_valor, :created_by_external_id)
     ");
 
     $stmt->execute(array(
@@ -398,8 +471,10 @@ function cs_action_guardar_servicio_cliente()
         ':monto' => $monto,
         ':bloque_documento' => $bloque_documento,
         ':estado' => $estado,
-        ':fecha_aviso' => $fecha_aviso_db,
+        ':fecha_vencimiento' => $fecha_vencimiento !== '' ? $fecha_vencimiento : null,
+        ':fecha_aviso' => $fecha_aviso,
         ':modo_aviso' => $modo_aviso,
+        ':aviso_valor' => $aviso_valor,
         ':created_by_external_id' => cs_external_id()
     ));
 

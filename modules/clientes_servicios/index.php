@@ -233,30 +233,43 @@ $etiquetas_options = cs_render_etiquetas_options();
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label>Fecha de aviso</label>
-                        <input type="date" name="fecha_aviso" id="servicioFechaAviso" class="form-control">
+                    <div class="form-group col-md-3">
+                        <label>Fecha vencimiento</label>
+                        <input type="date" name="fecha_vencimiento" id="servicioFechaVencimiento" class="form-control">
                     </div>
 
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
+                        <label>Fecha de aviso</label>
+                        <input type="datetime-local" name="fecha_aviso" id="servicioFechaAviso" class="form-control">
+                    </div>
+
+                    <div class="form-group col-md-3">
                         <label>Modo aviso</label>
                         <select name="modo_aviso" id="servicioModoAviso" class="custom-select">
                             <option value="Sin aviso">Sin aviso</option>
                             <option value="Fecha exacta">Fecha exacta</option>
+                            <option value="Faltando X días">Faltando X días</option>
+                            <option value="Faltando X horas">Faltando X horas</option>
+                            <option value="Faltando X minutos">Faltando X minutos</option>
                             <option value="Antes de vencer">Antes de vencer</option>
                             <option value="Manual">Manual</option>
                         </select>
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label>Estado</label>
-                        <select name="estado" id="servicioEstado" class="custom-select">
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="En proforma">En proforma</option>
-                            <option value="Pagado">Pagado</option>
-                            <option value="Anulado">Anulado</option>
-                        </select>
+                    <div class="form-group col-md-3">
+                        <label>Valor aviso</label>
+                        <input type="number" name="aviso_valor" id="servicioAvisoValor" class="form-control" min="0" step="1" placeholder="Ejemplo: 2">
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select name="estado" id="servicioEstado" class="custom-select">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En proforma">En proforma</option>
+                        <option value="Pagado">Pagado</option>
+                        <option value="Anulado">Anulado</option>
+                    </select>
                 </div>
             </div>
 
