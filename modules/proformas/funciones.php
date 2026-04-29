@@ -633,12 +633,14 @@ function pf_render_documento($proforma_id)
                             <span>
                                 <?php echo e($metodo['tipo']); ?>
                                 <?php if ($metodo['tipo'] === 'Cuenta de ahorro') { ?>
+                                    | Titular: <?php echo e($metodo['titular']); ?>
                                     | Banco: <?php echo e($metodo['banco']); ?>
                                     | Cuenta: <?php echo e($metodo['numero_cuenta']); ?>
                                     <?php if (trim((string)$metodo['cci']) !== '') { ?>
                                         | CCI: <?php echo e($metodo['cci']); ?>
                                     <?php } ?>
                                 <?php } else { ?>
+                                    | Titular: <?php echo e($metodo['titular']); ?>
                                     | Celular: <?php echo e($metodo['numero_celular']); ?>
                                 <?php } ?>
                             </span>

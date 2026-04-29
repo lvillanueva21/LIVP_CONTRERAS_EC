@@ -886,12 +886,14 @@ function rb_render_documento($recibo_id)
                             <span>
                                 <?php echo e($metodo_visible['tipo']); ?>
                                 <?php if ($metodo_visible['tipo'] === 'Cuenta de ahorro') { ?>
+                                    | Titular: <?php echo e($metodo_visible['titular']); ?>
                                     | Banco: <?php echo e($metodo_visible['banco']); ?>
                                     | Cuenta: <?php echo e($metodo_visible['numero_cuenta']); ?>
                                     <?php if (trim((string)$metodo_visible['cci']) !== '') { ?>
                                         | CCI: <?php echo e($metodo_visible['cci']); ?>
                                     <?php } ?>
                                 <?php } else { ?>
+                                    | Titular: <?php echo e($metodo_visible['titular']); ?>
                                     | Celular: <?php echo e($metodo_visible['numero_celular']); ?>
                                 <?php } ?>
                             </span>
@@ -907,12 +909,14 @@ function rb_render_documento($recibo_id)
                     <span>
                         <?php echo e($metodo['tipo']); ?>
                         <?php if ($metodo['tipo'] === 'Cuenta de ahorro') { ?>
+                            | Titular: <?php echo e($metodo['titular']); ?>
                             | Banco: <?php echo e($metodo['banco']); ?>
                             | Cuenta: <?php echo e($metodo['numero_cuenta']); ?>
                             <?php if (trim((string)$metodo['cci']) !== '') { ?>
                                 | CCI: <?php echo e($metodo['cci']); ?>
                             <?php } ?>
                         <?php } else { ?>
+                            | Titular: <?php echo e($metodo['titular']); ?>
                             | Celular: <?php echo e($metodo['numero_celular']); ?>
                         <?php } ?>
                     </span>
