@@ -782,6 +782,26 @@ body {
     vertical-align: middle;
 }
 
+.pf-bloques-box {
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.45rem;
+    background: #f3f6fb;
+    padding: 0.65rem 0.75rem;
+}
+
+.pf-bloques-box > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.9rem;
+}
+
+.pf-bloques-box > div:last-child {
+    margin-bottom: 0;
+}
+
 .pf-total-box {
     border: 1px solid var(--ecc-border);
     border-radius: 0.45rem;
@@ -842,6 +862,10 @@ body {
 
 .pf-documento-horizontal {
     max-width: 1100px;
+}
+
+.pf-documento-horizontal .pf-doc-body {
+    padding: 1.1rem 1.2rem;
 }
 
 .pf-doc-header {
@@ -976,6 +1000,19 @@ body {
 
 .pf-doc-bloque th {
     background: #f8f9fa;
+}
+
+.pf-doc-bloque-total {
+    margin-top: 0.35rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.9rem;
+    font-size: 0.92rem;
+    color: #495057;
+}
+
+.pf-doc-bloque-total strong {
+    color: #1f4e79;
 }
 
 .pf-doc-totales {
@@ -1144,6 +1181,15 @@ body {
     margin-bottom: 0;
 }
 
+.rb-bloque-line {
+    font-size: 0.86rem;
+}
+
+.rb-bloque-line span {
+    color: #495057;
+    margin-right: 0.5rem;
+}
+
 .rb-total-final {
     border-top: 1px solid var(--ecc-border);
     padding-top: 0.55rem;
@@ -1180,6 +1226,10 @@ body {
 
 .rb-documento-horizontal {
     max-width: 1100px;
+}
+
+.rb-documento-horizontal .rb-doc-body {
+    padding: 1.1rem 1.2rem;
 }
 
 .rb-doc-header {
@@ -1316,6 +1366,24 @@ body {
     background: #f8f9fa;
 }
 
+.rb-doc-bloque-total {
+    margin-top: 0.35rem;
+    display: grid;
+    gap: 0.2rem;
+}
+
+.rb-doc-bloque-total > div {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.rb-doc-bloque-total strong {
+    color: #1f4e79;
+}
+
 .rb-doc-totales {
     display: grid;
     gap: 0.35rem;
@@ -1333,6 +1401,37 @@ body {
 
 .rb-doc-total-final {
     font-size: 1.15rem;
+}
+
+.rb-doc-metodos {
+    margin-top: 1rem;
+    border: 1px solid var(--ecc-border);
+    border-radius: 0.35rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+}
+
+.rb-doc-metodos h5 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.rb-doc-metodo {
+    display: grid;
+    border-top: 1px solid var(--ecc-border);
+    padding-top: 0.45rem;
+    margin-top: 0.45rem;
+}
+
+.rb-doc-metodo:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.rb-doc-metodo span {
+    color: #6c757d;
+    font-size: 0.85rem;
 }
 
 .rb-doc-metodo-pago {

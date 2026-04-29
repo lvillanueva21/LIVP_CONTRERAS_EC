@@ -176,6 +176,11 @@ $plantillas_options = pf_render_plantillas_options();
                                     </div>
 
                                     <div class="col-md-5">
+                                        <div class="pf-bloques-box mb-2">
+                                            <div><span>Actuales</span><strong id="proformaBloqueActualesTexto">S/ 0.00</strong></div>
+                                            <div><span>Pendientes de pago</span><strong id="proformaBloquePendientesTexto">S/ 0.00</strong></div>
+                                            <div><span>Otros servicios o trámites</span><strong id="proformaBloqueOtrosTexto">S/ 0.00</strong></div>
+                                        </div>
                                         <div class="pf-total-box">
                                             <div>
                                                 <span>Subtotal</span>
@@ -186,7 +191,7 @@ $plantillas_options = pf_render_plantillas_options();
                                                 <input type="number" name="descuento" id="proformaDescuento" class="form-control form-control-sm" min="0" step="0.01" value="0.00">
                                             </div>
                                             <div class="pf-total-final">
-                                                <span>Total</span>
+                                                <span>Total general</span>
                                                 <strong id="proformaTotalTexto">S/ 0.00</strong>
                                             </div>
                                         </div>

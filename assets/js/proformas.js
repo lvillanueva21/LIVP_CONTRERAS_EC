@@ -299,9 +299,18 @@
 
         calcularTotales: function () {
             var subtotal = 0;
+            var bloques = {
+                'Actuales': 0,
+                'Pendientes de pago': 0,
+                'Otros servicios o trámites': 0
+            };
 
             $.each(this.items, function (index, item) {
-                subtotal += parseFloat(item.cantidad || 0) * parseFloat(item.precio_unitario || 0);
+                var itemTotal = parseFloat(item.cantidad || 0) * parseFloat(item.precio_unitario || 0);
+                subtotal += itemTotal;
+                if (bloques.hasOwnProperty(item.bloque)) {
+                    bloques[item.bloque] += itemTotal;
+                }
             });
 
             var descuento = parseFloat($('#proformaDescuento').val() || '0');
@@ -317,6 +326,9 @@
 
             var total = subtotal - descuento;
 
+            $('#proformaBloqueActualesTexto').text('S/ ' + bloques['Actuales'].toFixed(2));
+            $('#proformaBloquePendientesTexto').text('S/ ' + bloques['Pendientes de pago'].toFixed(2));
+            $('#proformaBloqueOtrosTexto').text('S/ ' + bloques['Otros servicios o trámites'].toFixed(2));
             $('#proformaSubtotalTexto').text('S/ ' + subtotal.toFixed(2));
             $('#proformaTotalTexto').text('S/ ' + total.toFixed(2));
         },

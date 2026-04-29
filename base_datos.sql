@@ -556,6 +556,13 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - El bloque del documento se decide en proformas o recibos, no al cargar servicio al cliente.
    - ecc_cliente_servicios.bloque_documento se mantiene como compatibilidad técnica con valor por defecto Actuales.
    - Se corrige la consulta de servicios disponibles en proformas para evitar mezclar servicios de otros clientes.
+
+   2026-04-29 - FASE 11.5.3
+   - Se agregan totales por bloque en la UI y documento de proformas.
+   - Se agregan totales por bloque (original y pagado) en la UI y documento de recibos.
+   - Los métodos visibles del documento de recibo pasan a depender de la plantilla.
+   - ecc_recibos.metodo_pago_id se mantiene como método usado para pagar, no como lista visible del documento.
+   - No se crean tablas nuevas ni cambios estructurales.
 */
 
 

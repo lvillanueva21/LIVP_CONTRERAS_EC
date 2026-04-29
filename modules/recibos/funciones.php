@@ -660,6 +660,26 @@ function rb_actualizar_estado_servicio_adicional($cliente_servicio_id, $monto_or
     ));
 }
 
+function rb_totalizar_bloques_recibo($detalles)
+{
+    $totales = array(
+        'Actuales' => array('original' => 0.00, 'pagado' => 0.00),
+        'Pendientes de pago' => array('original' => 0.00, 'pagado' => 0.00),
+        'Otros servicios o trámites' => array('original' => 0.00, 'pagado' => 0.00)
+    );
+
+    foreach ($detalles as $detalle) {
+        $bloque = isset($detalle['bloque']) ? $detalle['bloque'] : 'Actuales';
+        if (!isset($totales[$bloque])) {
+            $totales[$bloque] = array('original' => 0.00, 'pagado' => 0.00);
+        }
+        $totales[$bloque]['original'] += isset($detalle['monto_original']) ? (float)$detalle['monto_original'] : 0.00;
+        $totales[$bloque]['pagado'] += isset($detalle['monto_pagado']) ? (float)$detalle['monto_pagado'] : 0.00;
+    }
+
+    return $totales;
+}
+
 function rb_render_documento($recibo_id)
 {
     $recibo = rb_obtener($recibo_id);
@@ -674,6 +694,7 @@ function rb_render_documento($recibo_id)
     $proforma = $recibo['proforma_id'] ? rb_obtener_proforma($recibo['proforma_id']) : null;
     $empresa = rb_configuracion_empresa();
     $detalles = rb_obtener_detalles($recibo_id);
+    $metodos_visibles = $plantilla ? rb_metodos_plantilla($plantilla['id']) : array();
 
     if (!$plantilla) {
         $plantilla = array(
@@ -697,9 +718,12 @@ function rb_render_documento($recibo_id)
         'Otros servicios o trámites' => array()
     );
 
+    $totales_bloque = rb_totalizar_bloques_recibo($detalles);
+
     foreach ($detalles as $detalle) {
         if (!isset($bloques[$detalle['bloque']])) {
             $bloques[$detalle['bloque']] = array();
+            $totales_bloque[$detalle['bloque']] = array('original' => 0.00, 'pagado' => 0.00);
         }
 
         $bloques[$detalle['bloque']][] = $detalle;
@@ -814,6 +838,16 @@ function rb_render_documento($recibo_id)
                                 <?php } ?>
                             </tbody>
                         </table>
+                        <div class="rb-doc-bloque-total">
+                            <div>
+                                <span>Total original <?php echo e($bloque_nombre); ?></span>
+                                <strong><?php echo e(app_money($totales_bloque[$bloque_nombre]['original'])); ?></strong>
+                            </div>
+                            <div>
+                                <span>Total pagado <?php echo e($bloque_nombre); ?></span>
+                                <strong><?php echo e(app_money($totales_bloque[$bloque_nombre]['pagado'])); ?></strong>
+                            </div>
+                        </div>
                     </div>
                 <?php } ?>
             <?php } ?>
@@ -824,9 +858,32 @@ function rb_render_documento($recibo_id)
                 <div><span>Saldo pendiente</span><strong><?php echo e(app_money($recibo['saldo_pendiente'])); ?></strong></div>
             </div>
 
+            <?php if (!empty($metodos_visibles)) { ?>
+                <div class="rb-doc-metodos">
+                    <h5>Métodos de pago</h5>
+                    <?php foreach ($metodos_visibles as $metodo_visible) { ?>
+                        <div class="rb-doc-metodo">
+                            <strong><?php echo e($metodo_visible['titulo_visible']); ?></strong>
+                            <span>
+                                <?php echo e($metodo_visible['tipo']); ?>
+                                <?php if ($metodo_visible['tipo'] === 'Cuenta de ahorro') { ?>
+                                    | Banco: <?php echo e($metodo_visible['banco']); ?>
+                                    | Cuenta: <?php echo e($metodo_visible['numero_cuenta']); ?>
+                                    <?php if (trim((string)$metodo_visible['cci']) !== '') { ?>
+                                        | CCI: <?php echo e($metodo_visible['cci']); ?>
+                                    <?php } ?>
+                                <?php } else { ?>
+                                    | Celular: <?php echo e($metodo_visible['numero_celular']); ?>
+                                <?php } ?>
+                            </span>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+
             <?php if ($metodo) { ?>
                 <div class="rb-doc-metodo-pago">
-                    <h5>Método de pago confirmado</h5>
+                    <h5>Método usado para el pago</h5>
                     <strong><?php echo e($metodo['titulo_visible']); ?></strong>
                     <span>
                         <?php echo e($metodo['tipo']); ?>
@@ -842,7 +899,6 @@ function rb_render_documento($recibo_id)
                     </span>
                 </div>
             <?php } ?>
-
             <?php if ((int)$plantilla['pie_pagina_visible'] === 1) { ?>
                 <?php $pie = trim((string)$plantilla['pie_pagina']) !== '' ? $plantilla['pie_pagina'] : $empresa['pie_pagina']; ?>
                 <?php if (trim((string)$pie) !== '') { ?>
@@ -882,3 +938,4 @@ function rb_auditoria($accion, $tabla, $registro_id, $descripcion, $datos_anteri
         ':created_by_external_id' => rb_external_id()
     ));
 }
+

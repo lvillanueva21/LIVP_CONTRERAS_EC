@@ -213,6 +213,9 @@ $metodos_options = rb_render_metodos_pago_options();
                         </div>
 
                         <div class="rb-total-box mt-3">
+                            <div class="rb-bloque-line"><span>Actuales (original/pagado/saldo)</span><strong id="reciboBloqueActualesTexto">S/ 0.00 / S/ 0.00 / S/ 0.00</strong></div>
+                            <div class="rb-bloque-line"><span>Pendientes de pago (original/pagado/saldo)</span><strong id="reciboBloquePendientesTexto">S/ 0.00 / S/ 0.00 / S/ 0.00</strong></div>
+                            <div class="rb-bloque-line"><span>Otros servicios o trámites (original/pagado/saldo)</span><strong id="reciboBloqueOtrosTexto">S/ 0.00 / S/ 0.00 / S/ 0.00</strong></div>
                             <div>
                                 <span>Total proforma</span>
                                 <strong id="reciboTotalProformaTexto">S/ 0.00</strong>

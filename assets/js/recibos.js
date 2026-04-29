@@ -380,9 +380,18 @@
         calcularTotales: function () {
             var totalPagado = 0;
             var totalProforma = this.totalProforma;
+            var bloques = {
+                'Actuales': { original: 0, pagado: 0 },
+                'Pendientes de pago': { original: 0, pagado: 0 },
+                'Otros servicios o trámites': { original: 0, pagado: 0 }
+            };
 
             $.each(this.items, function (index, item) {
                 totalPagado += parseFloat(item.monto_pagado || 0);
+                if (bloques.hasOwnProperty(item.bloque)) {
+                    bloques[item.bloque].original += parseFloat(item.monto_original || 0);
+                    bloques[item.bloque].pagado += parseFloat(item.monto_pagado || 0);
+                }
             });
 
             var pagadoProformaActual = 0;
@@ -398,7 +407,13 @@
             }
 
             var saldo = Math.max(totalProforma - pagadoProformaActual, 0);
+            var bActualesSaldo = Math.max(bloques['Actuales'].original - bloques['Actuales'].pagado, 0);
+            var bPendSaldo = Math.max(bloques['Pendientes de pago'].original - bloques['Pendientes de pago'].pagado, 0);
+            var bOtrosSaldo = Math.max(bloques['Otros servicios o trámites'].original - bloques['Otros servicios o trámites'].pagado, 0);
 
+            $('#reciboBloqueActualesTexto').text('S/ ' + bloques['Actuales'].original.toFixed(2) + ' / S/ ' + bloques['Actuales'].pagado.toFixed(2) + ' / S/ ' + bActualesSaldo.toFixed(2));
+            $('#reciboBloquePendientesTexto').text('S/ ' + bloques['Pendientes de pago'].original.toFixed(2) + ' / S/ ' + bloques['Pendientes de pago'].pagado.toFixed(2) + ' / S/ ' + bPendSaldo.toFixed(2));
+            $('#reciboBloqueOtrosTexto').text('S/ ' + bloques['Otros servicios o trámites'].original.toFixed(2) + ' / S/ ' + bloques['Otros servicios o trámites'].pagado.toFixed(2) + ' / S/ ' + bOtrosSaldo.toFixed(2));
             $('#reciboTotalProformaTexto').text('S/ ' + totalProforma.toFixed(2));
             $('#reciboTotalPagadoTexto').text('S/ ' + totalPagado.toFixed(2));
             $('#reciboSaldoPendienteTexto').text('S/ ' + saldo.toFixed(2));

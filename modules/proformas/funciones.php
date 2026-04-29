@@ -432,6 +432,25 @@ function pf_render_servicios_cliente($cliente_id, $proforma_id = 0)
     return ob_get_clean();
 }
 
+function pf_totalizar_bloques_detalles($detalles)
+{
+    $totales = array(
+        'Actuales' => 0.00,
+        'Pendientes de pago' => 0.00,
+        'Otros servicios o trámites' => 0.00
+    );
+
+    foreach ($detalles as $detalle) {
+        $bloque = isset($detalle['bloque']) ? $detalle['bloque'] : 'Actuales';
+        if (!isset($totales[$bloque])) {
+            $totales[$bloque] = 0.00;
+        }
+        $totales[$bloque] += isset($detalle['total']) ? (float)$detalle['total'] : 0.00;
+    }
+
+    return $totales;
+}
+
 function pf_render_documento($proforma_id)
 {
     $pdo = app_pdo();
@@ -470,9 +489,12 @@ function pf_render_documento($proforma_id)
         'Otros servicios o trámites' => array()
     );
 
+    $totales_bloque = pf_totalizar_bloques_detalles($detalles);
+
     foreach ($detalles as $detalle) {
         if (!isset($bloques[$detalle['bloque']])) {
             $bloques[$detalle['bloque']] = array();
+            $totales_bloque[$detalle['bloque']] = 0.00;
         }
 
         $bloques[$detalle['bloque']][] = $detalle;
@@ -588,6 +610,10 @@ function pf_render_documento($proforma_id)
                                 <?php } ?>
                             </tbody>
                         </table>
+                        <div class="pf-doc-bloque-total">
+                            <span>Total <?php echo e($bloque_nombre); ?></span>
+                            <strong><?php echo e(app_money($totales_bloque[$bloque_nombre])); ?></strong>
+                        </div>
                     </div>
                 <?php } ?>
             <?php } ?>
