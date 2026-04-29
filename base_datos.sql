@@ -500,7 +500,7 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se confirma que la plantilla no controla bloques de servicios.
    - Los bloques Actuales, Pendientes de pago y Otros servicios o trámites se mostrarán automáticamente si tienen ítems.
 
-   2026-04-28 - FASE 8
+      2026-04-28 - FASE 8
    - Se implementa el módulo Proformas de pago.
    - Se reutilizan las tablas ecc_proformas y ecc_proforma_detalles.
    - No se crean tablas nuevas.
@@ -524,6 +524,7 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Los servicios no pagados o parcialmente pagados quedan como Pendiente.
    - Se permite añadir servicio adicional al confirmar pago.
    - Los botones Descargar JPG y Descargar PDF quedan preparados para la exportación local de Fase 10.
+*/
 
 
 */
@@ -731,6 +732,8 @@ ON DUPLICATE KEY UPDATE
 `total` = VALUES(`total`),
 `estado` = VALUES(`estado`),
 `orden` = VALUES(`orden`);
+
+
 
 INSERT INTO `ecc_recibos`
 (`id`, `codigo`, `proforma_id`, `cliente_id`, `plantilla_id`, `metodo_pago_id`, `fecha_emision`, `fecha_pago`, `total_proforma`, `total_pagado`, `saldo_pendiente`, `estado`, `observacion`, `created_by_external_id`)
