@@ -7,6 +7,8 @@ if (!defined('APP_BOOTSTRAP')) {
 date_default_timezone_set('America/Lima');
 
 $app_config = array(
+    'app_timezone' => 'America/Lima',
+    'database_timezone' => '-05:00',
     'app_name' => 'Estudio Contable Contreras',
     'app_short_name' => 'Contreras',
     'app_version' => '0.2.0',

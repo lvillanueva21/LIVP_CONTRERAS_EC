@@ -24,8 +24,12 @@ function app_pdo()
     );
 
     try {
-        $pdo = new PDO($dsn, $db['user'], $db['pass'], $options);
-        return $pdo;
+      $pdo = new PDO($dsn, $db['user'], $db['pass'], $options);
+
+$database_timezone = app_config('database_timezone', '-05:00');
+$pdo->exec("SET time_zone = " . $pdo->quote($database_timezone));
+
+return $pdo;
     } catch (PDOException $e) {
         if (app_debug()) {
             throw new RuntimeException('No se pudo conectar a la base de datos: ' . $e->getMessage());
