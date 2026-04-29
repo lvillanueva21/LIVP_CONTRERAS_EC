@@ -499,6 +499,21 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se permite controlar orientación, logo, datos empresa, datos cliente, métodos de pago, color y pie de página.
    - Se confirma que la plantilla no controla bloques de servicios.
    - Los bloques Actuales, Pendientes de pago y Otros servicios o trámites se mostrarán automáticamente si tienen ítems.
+
+   2026-04-28 - FASE 8
+   - Se implementa el módulo Proformas de pago.
+   - Se reutilizan las tablas ecc_proformas y ecc_proforma_detalles.
+   - No se crean tablas nuevas.
+   - No se agregan columnas nuevas.
+   - Se permite crear, editar y ver documento de proforma.
+   - Se permite documento manual de emergencia usando detalles tipo Manual.
+   - Los servicios seleccionados pasan a estado En proforma.
+   - La proforma no registra ingreso.
+   - Los botones Descargar JPG y Descargar PDF quedan preparados para la exportación local de Fase 10.
+
+
+
+
 */
 
 

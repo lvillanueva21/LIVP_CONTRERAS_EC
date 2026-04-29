@@ -38,5 +38,8 @@ $config = app_config();
 <?php if (isset($app_current_module) && $app_current_module === 'plantillas') { ?>
 <script src="<?php echo e(asset_url('assets/js/plantillas.js')); ?>"></script>
 <?php } ?>
+<?php if (isset($app_current_module) && $app_current_module === 'proformas') { ?>
+<script src="<?php echo e(asset_url('assets/js/proformas.js')); ?>"></script>
+<?php } ?>
 </body>
 </html>
