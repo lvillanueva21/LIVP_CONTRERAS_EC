@@ -227,6 +227,7 @@ $('#clienteTipo').on('change', function () {
 actualizarTipoCliente: function (forzarDocumentoPorTipo) {
     var tipo = $('#clienteTipo').val();
     var documentoTipo = $('#clienteDocumentoTipo');
+    var documentoActual = documentoTipo.val();
     var numeroDocumento = $('#clienteNumeroDocumento');
     var ayuda = $('#clienteContactoAyuda');
     var documentoAyuda = $('#clienteDocumentoAyuda');
@@ -244,8 +245,8 @@ actualizarTipoCliente: function (forzarDocumentoPorTipo) {
         $('.cliente-campo-contacto').show();
         razonSocialCampo.show();
 
+        documentoTipo.html('<option value="RUC">RUC</option>');
         documentoTipo.val('RUC');
-        documentoTipo.find('option[value="DNI"]').prop('disabled', true);
 
         numeroDocumento.attr('maxlength', '11');
         numeroDocumento.attr('inputmode', 'numeric');
@@ -263,10 +264,15 @@ actualizarTipoCliente: function (forzarDocumentoPorTipo) {
     $('.cliente-campo-empresa').hide();
     $('.cliente-campo-contacto').show();
 
-    documentoTipo.find('option[value="DNI"]').prop('disabled', false);
+    documentoTipo.html(
+        '<option value="RUC">RUC</option>' +
+        '<option value="DNI">DNI</option>'
+    );
 
-    if (forzarDocumentoPorTipo || (documentoTipo.val() !== 'RUC' && documentoTipo.val() !== 'DNI')) {
+    if (forzarDocumentoPorTipo || (documentoActual !== 'RUC' && documentoActual !== 'DNI')) {
         documentoTipo.val('RUC');
+    } else {
+        documentoTipo.val(documentoActual);
     }
 
     if (documentoTipo.val() === 'DNI') {
@@ -364,24 +370,27 @@ validarClienteFormulario: function () {
 
                     ClientesServicios.limpiarCliente();
 
-                    $('#modalClienteTitulo').text('Editar cliente');
-                    $('#clienteId').val(c.id);
-                    $('#clienteTipo').val(c.tipo_cliente);
-                    $('#clienteDocumentoTipo').val(c.documento_tipo);
-                    $('#clienteNumeroDocumento').val(c.numero_documento);
-                    $('#clienteRazonSocial').val(c.razon_social);
-                    $('#clienteNombreComercial').val(c.nombre_comercial);
-                    $('#clienteNombres').val(c.nombres);
-                    $('#clienteApellidos').val(c.apellidos);
-                    $('#clienteDireccion').val(c.direccion);
-                    $('#clienteCelular').val(c.celular);
-                    $('#clienteCorreo').val(c.correo);
-                    $('#clienteObservacion').val(c.observacion);
-                    $('#clienteEstado').val(String(c.estado));
+$('#modalClienteTitulo').text('Editar cliente');
+$('#clienteId').val(c.id);
+$('#clienteTipo').val(c.tipo_cliente);
 
-                    ClientesServicios.actualizarTipoCliente();
-                    AppUI.refresh();
-                    AppUI.openModal('#modalCliente');
+ClientesServicios.actualizarTipoCliente(false);
+
+$('#clienteDocumentoTipo').val(c.documento_tipo);
+$('#clienteNumeroDocumento').val(c.numero_documento);
+$('#clienteRazonSocial').val(c.razon_social);
+$('#clienteNombreComercial').val(c.nombre_comercial);
+$('#clienteNombres').val(c.nombres);
+$('#clienteApellidos').val(c.apellidos);
+$('#clienteDireccion').val(c.direccion);
+$('#clienteCelular').val(c.celular);
+$('#clienteCorreo').val(c.correo);
+$('#clienteObservacion').val(c.observacion);
+$('#clienteEstado').val(String(c.estado));
+
+ClientesServicios.actualizarTipoCliente(false);
+AppUI.refresh();
+AppUI.openModal('#modalCliente');
                 }
             });
         },
