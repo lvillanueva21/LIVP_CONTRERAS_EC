@@ -605,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
    - Se actualiza auditoría para usar usuario real.
    - Se mantiene preparación futura para API/token.
 
-      2026-04-29 - AJUSTE ZONA HORARIA
+   2026-04-29 - AJUSTE ZONA HORARIA
    - Se configura PHP con America/Lima.
    - Se configura la sesión MySQL con -05:00 desde includes/conexion.php.
    - Se corrige el comportamiento de NOW(), CURDATE() y CURRENT_TIMESTAMP para operar con hora de Perú.
