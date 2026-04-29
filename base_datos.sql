@@ -527,8 +527,6 @@ CREATE TABLE IF NOT EXISTS `ecc_auditoria` (
 */
 
 
-*/
-
 
 /* ============================================================
    4. DATOS DE PRUEBA
